@@ -1,0 +1,35 @@
+html{height:100%; margin:0; padding:0;}
+
+/* scroll */
+html{
+	scrollbar-3dLight-Color:#fff; /*3D 경계*/
+	scrollbar-arrow-color:#b8b8b8; /*화살표*/
+	scrollbar-base-color:#b8b8b8; /*기본*/
+	scrollbar-Face-Color:#fff; /*어두운 그림자*/
+	scrollbar-Track-Color:#fff; /*배경*/
+	scrollbar-DarkShadow-Color:#ddd; /*선택*/
+	scrollbar-Highlight-Color: #b8b8b8; /*그림자*/
+	scrollbar-Shadow-Color: #b8b8b8; /*트랙 색*/
+}
+
+/* modal */
+.modal{
+	text-align: center;
+}
+.modal-dialog{
+	margin-top: 100px;
+}
+
+/* main page */
+.height100 {
+	height: 100%;
+}
+.obj_box {
+	min-width: 1280px;
+	min-height: 620px;
+	margin: 0 auto;
+	display: inline-block;
+}
+.lay_item_lower {
+	height: 85%;
+}

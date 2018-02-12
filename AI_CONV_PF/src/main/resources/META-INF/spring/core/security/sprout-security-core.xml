@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<!-- spring security main cofnig (중복되는 설정)-->
+	<beans:bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl"/>
+	
+	 <beans:bean id="concurrencyFilter" class="org.springframework.security.web.session.ConcurrentSessionFilter">
+	    <beans:constructor-arg index="0" ref="sessionRegistry"/>
+	    <beans:constructor-arg index="1" value="${expired.url}"/>
+	</beans:bean>
+		
+	<beans:bean id="sas" class="org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy">
+	    <beans:constructor-arg>
+	        <beans:list>
+	            <beans:bean class="org.springframework.security.web.authentication.session.ConcurrentSessionControlAuthenticationStrategy">
+	                <beans:constructor-arg ref="sessionRegistry"/>
+	                <beans:property name="maximumSessions" value="1" />
+	                <beans:property name="exceptionIfMaximumExceeded" value="false" />
+	            </beans:bean>
+	            <beans:bean class="org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy"/>
+	            <beans:bean class="org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy">
+	                <beans:constructor-arg ref="sessionRegistry"/>
+	            </beans:bean>
+	        </beans:list>
+	    </beans:constructor-arg>
+	</beans:bean>	
+	
+	<!-- 로그인 페이지 설정(인증 권한을 필요로 하는 사용자 접근시 로그인 페이지로 화면 이동) -->
+    <beans:bean id="loginUrlAuthenticationEntryPoint" class="nexcore.sprout.foundry.security.web.authentication.DefaultLoginUrlAuthenticationEntryPoint">
+    	<beans:constructor-arg>
+    		<beans:value>${login.form.url}</beans:value>
+    	</beans:constructor-arg>
+        <beans:property name="useForward"   value="true"/>
+    </beans:bean>
+
+	<!-- access denied handler -->
+	<beans:bean id="accessDeniedHandler"  class="nexcore.sprout.foundry.security.web.access.DefaultAccessDeniedHandler">
+		<beans:property name="errorPage" value="${access.denied.url}"/>
+	</beans:bean>
+	
+	<beans:bean id="logoutFilter" class="org.springframework.security.web.authentication.logout.LogoutFilter">
+		<beans:constructor-arg ref="logoutSuccessHandler"/>
+		<beans:constructor-arg >
+			<beans:list>
+				<beans:bean class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler"/>
+			</beans:list>
+		</beans:constructor-arg>
+		<beans:property name="logoutRequestMatcher">
+			<beans:bean class="org.springframework.security.web.util.matcher.RegexRequestMatcher">
+				<beans:constructor-arg index="0" value="${logout.processes.url}"/>
+				<beans:constructor-arg index="1" ><beans:null/></beans:constructor-arg>
+			</beans:bean>
+		</beans:property>
+	</beans:bean>
+	
+	<!-- logout success handler -->
+	<beans:bean id="logoutSuccessHandler" class="nexcore.sprout.foundry.security.web.authentication.logout.DefaultSimpleUrlLogoutSuccessHandler">
+		<beans:property name="useForward"       value="true"/>
+		<beans:property name="defaultTargetUrl" value="${logout.success.url}"/>
+	</beans:bean>	
+
+	<beans:bean id="accessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
+		<beans:constructor-arg >
+			<beans:list>
+				<beans:bean class="org.springframework.security.access.vote.RoleHierarchyVoter">
+					<beans:constructor-arg ref="roleHierarchy" />
+				</beans:bean>
+				<beans:bean class="org.springframework.security.access.vote.AuthenticatedVoter"/>
+				<beans:bean class="org.springframework.security.web.access.expression.WebExpressionVoter"/>
+			</beans:list>
+		</beans:constructor-arg>
+	</beans:bean>
+
+	<beans:bean id="roleHierarchy" class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl">
+		<beans:property name="hierarchy" value=""/>
+	</beans:bean>	
+	
+	<!-- 사용자의 계정ID와 패스워드 정보를 취득하는 Filter -->
+	<beans:bean id="defaultUsernamePasswordAuthenticationFilter" class="nexcore.sprout.foundry.security.web.authentication.JsonUsernamePasswordAuthenticationFilter">
+		<beans:property name="usernameParameter" value="userid"/><!-- 계정ID의 파라미터 명 -->
+		<beans:property name="passwordParameter" value="password"/><!-- 계정 패스워드의 파라미터 명 -->
+		<beans:property name="sessionAuthenticationStrategy" ref="sas"/>
+		<beans:property name="authenticationManager" ref="authenticationManager"/>
+		<beans:property name="requiresAuthenticationRequestMatcher"><!-- 로그인 처리 URL 정보 -->
+			<beans:bean class="org.springframework.security.web.util.matcher.RegexRequestMatcher">
+				<beans:constructor-arg index="0" value="${login.processes.url}"/>
+				<beans:constructor-arg index="1" value="POST"/>
+			</beans:bean>
+		</beans:property>
+		<beans:property name="authenticationSuccessHandler">
+			<beans:bean class="nexcore.sprout.foundry.security.web.authentication.DefaultSavedRequestAwareAuthenticationSuccessHandler">
+				<beans:property name="useForward" value="true"/>
+				<beans:property name="defaultTargetUrl" value="${login.success.url}"/>
+			</beans:bean>
+		</beans:property>
+		<beans:property name="authenticationFailureHandler">
+			<beans:bean class="nexcore.sprout.foundry.security.web.authentication.DefaultSimpleUrlAuthenticationFailureHandler">
+				<beans:property name="useForward" value="true"/>
+				<beans:property name="defaultFailureUrl" value="${login.failure.url}"/>
+			</beans:bean>
+		</beans:property>
+	</beans:bean>
+	
+	<sec:authentication-manager alias="authenticationManager">
+		<sec:authentication-provider user-service-ref="defaultUserDetailsService">
+			<sec:password-encoder ref="messageDigestPasswordEncoder" />
+		</sec:authentication-provider>
+	</sec:authentication-manager>	
+	
+	<beans:bean id="messageDigestPasswordEncoder"
+		class="org.springframework.security.crypto.password.StandardPasswordEncoder" />			
+		
+	<!-- Method, Controller의 Annotation으로 요청 권한 적용 -->
+    <sec:global-method-security pre-post-annotations="enabled" />
+</beans:beans>

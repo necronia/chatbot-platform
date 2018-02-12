@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<configuration debug="false" scan="true" scanPeriod="5 seconds">
+	<!-- JMX -->
+	<property resource="META-INF/properties/instance/instance_${instanceId:-localhost}.properties" />
+
+	<!-- 일반적인 FILE LOG PATTERN -->
+	<property name="FILE_LOG_PATTERN" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}][%5p][%t][%c][%X{req.remoteHost}][%X{GUID}] %m%n" />
+	
+	<!-- CONSOLE LOG PATTERN -->
+	<property name="CONSOLE_LOG_PATTERN" value="%d{[yyyy.MM.dd HH:mm:ss]} [%-35.35c{1}] %-5p %m%n" />
+	
+		<!-- Console Appender -->
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>${CONSOLE_LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+	
+	<!-- LOGSTASH LOG PATTERN -->
+	<property name="LOGSTASH_LOG_PATTERN" value="%m%n" />
+
+	<appender name="logstash_fwk"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log.path}/logstash_fwk.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${log.path}/bak/logstash_fwk.%d{yyyy-MM-dd}.log
+			</fileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${LOGSTASH_LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="file_fwk" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log.path}/file_fwk.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>${log.path}/bak/file_fwk.%d{yyyy-MM-dd}.log</fileNamePattern>
+		</rollingPolicy>
+		<encoder>
+				<pattern>${FILE_LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="file_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log.path}/error.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>${log.path}/bak/error.%d{yyyy-MM-dd}.log</fileNamePattern>
+		</rollingPolicy>
+		<encoder>
+				<pattern>${FILE_LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+	
+	<!-- 
+		사용자별 로그 파일 생성을 위한 Appender
+	    개발기 에서 사용자별 (IP 별 로그파일 생성을 원할 경우 appender를 추가함 
+	 -->
+	<appender name="file_byUser" class="ch.qos.logback.classic.sift.SiftingAppender">
+	   <discriminator>
+	      <key>req.remoteHost</key>
+	      <defaultValue>system</defaultValue>
+	    </discriminator>
+        <sift>
+            <appender name="${req.remoteHost}_appender"  class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <file>${log.path}/user/${req.remoteHost}.log</file>
+				<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+					<!-- daily rollover -->
+					<fileNamePattern>${log.path}/user/rolling/${req.remoteHost}_%d{yyyyMMdd}.log</fileNamePattern>
+				</rollingPolicy>
+	     		<encoder>
+					<pattern>${CONSOLE_LOG_PATTERN}</pattern>
+				</encoder>
+            </appender>
+        </sift>
+    </appender>
+	 
+	<!-- Spring --> 	
+ 	<logger name="org.springframework"  level="WARN"  additivity="false" >
+		<appender-ref ref="console" />
+		<appender-ref ref="file_fwk" />
+	</logger>
+	<logger name="org.springframework.core" level="INFO" additivity="false" >
+		<appender-ref ref="console" />
+		<appender-ref ref="file_fwk" />
+	</logger>
+	<logger name="org.springframework.beans" level="INFO"  additivity="false" >
+		<appender-ref ref="console" />
+		<appender-ref ref="file_fwk" />
+	</logger>
+	<logger name="org.springframework.context" level="INFO" additivity="false" >
+		<appender-ref ref="console" />
+		<appender-ref ref="file_fwk" />
+	</logger>
+	<logger name="org.springframework.http" level="DEBUG" additivity="false" >
+		<appender-ref ref="console" />
+		<appender-ref ref="file_fwk" />
+	</logger>
+	<logger name="org.springframework.web" level="DEBUG"  additivity="false" >
+		<appender-ref ref="console" />
+		<appender-ref ref="file_fwk" />
+	</logger>
+	<logger name="org.springframework.security" level="INFO" additivity="false" >
+		<appender-ref ref="console" />
+		<appender-ref ref="file_fwk" />
+	</logger>
+	<logger name="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource" level="DEBUG" additivity="false" >
+		<appender-ref ref="console" />
+		<appender-ref ref="file_fwk" />
+	</logger>
+	<logger name="org.springframework.jdbc.datasource.DataSourceTransactionManager" level="DEBUG"  additivity="false" >
+		<appender-ref ref="console" />
+		<appender-ref ref="file_fwk" />
+	</logger>
+	<logger name="org.springframework.test.web.servlet" additivity="false"  level="DEBUG" >
+		<appender-ref ref="console" />
+		<appender-ref ref="file_fwk" />
+	</logger>
+	<!-- [End] Spring log -->
+	
+	<logger name="nexcore.sprout" level="DEBUG" additivity="false">
+		<appender-ref ref="console" />
+		<appender-ref ref="file_fwk" />
+	</logger>
+	
+	<!-- SQL log -->
+	<logger name="org.springframework.jdbc" level="DEBUG" additivity="false">
+		<appender-ref ref="console" />
+		<appender-ref ref="file_fwk" />
+	</logger>
+	
+	<logger name="jdbc" level="ERROR" additivity="false" >
+		<appender-ref ref="console" />
+		<appender-ref ref="file_fwk" />
+	</logger>
+	
+	<logger name="jdbc.sqlonly" level="TRACE"  additivity="false">
+		<appender-ref ref="console" />
+		<appender-ref ref="file_fwk" />
+	</logger>
+	<logger name="jdbc.resultsettable" level="INFO" additivity="false">
+		<appender-ref ref="console" />
+		<appender-ref ref="file_fwk" />
+	</logger>
+	
+	<logger name="access" level="TRACE" additivity="false">
+		<appender-ref ref="console" />
+		<appender-ref ref="file_fwk" />
+	</logger>
+	
+	<logger name="logstash.log" level="trace" additivity="false">
+		<appender-ref ref="logstash_fwk" />
+	</logger>
+	
+	<!-- 오류 -->
+	<logger name="nexcore.sprout.foundry.exception" level="DEBUG" additivity="false">
+		<appender-ref ref="file_error" />
+		<appender-ref ref="console" />
+		<appender-ref ref="file_fwk" />
+	</logger>
+	<logger name="error" level="DEBUG" additivity="false">
+		<appender-ref ref="console" />
+		<appender-ref ref="file_error" />
+		<appender-ref ref="file_fwk" />
+	</logger>
+	 	
+	<!-- Root INFO declaration -->
+	<root level="DEBUG" additivity="false">
+		<appender-ref ref="console" />
+		<appender-ref ref="file_fwk" />
+    </root>
+</configuration>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Simple">
+	<select id="simpleSelect" parameterType="String" resultType="java.util.Map">
+select seq_no, 
+title, 
+content, 
+read_cnt, 
+writer, 
+to_char(req_date,'yyyy/mm/dd hh24:mi:ss') as req_date, 
+to_char(due_date, 'yyyy/mm/dd hh24:mi:ss') as due_date 
+from board 
+where SEQ_NO=1
+	</select>
+</mapper>

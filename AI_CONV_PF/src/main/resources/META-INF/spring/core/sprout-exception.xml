@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+	
+	<bean id="errorProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="ignoreResourceNotFound" value="false"/>
+		<property name="localOverride" value="true"/>
+		<property name="location" value="classpath:META-INF/properties/exception.properties"/>
+	</bean>
+	
+	<!-- for Default Exception Resolver -->
+	<bean id="exceptionHandler" class="nexcore.sprout.foundry.exception.hanlder.impl.DefaultExceptionHandler">
+		<property name="messageSource" ref="messageSource"/>
+		<property name="exceptionCodeResolvers">
+			<list>
+				<bean class="nexcore.sprout.foundry.exception.hanlder.impl.DefaultExceptionCodeResolver"/>
+				<bean class="nexcore.sprout.foundry.exception.hanlder.impl.PropertyExceptionCodeResolver">
+					<property name="properties" ref="errorProperties"/>
+				</bean>
+			</list>
+		</property>
+		<property name="exceptionTranslators">
+			<bean class="nexcore.sprout.foundry.exception.hanlder.web.ModelAndViewExceptionTranslator">
+				<property name="defaultViewName" value="common/error/error"/>
+			</bean>
+		</property>
+		<property name="exceptionTracers">
+			<bean class="nexcore.sprout.foundry.exception.hanlder.impl.DefaultExceptionLogTracer">
+				<property name="printStackTrace" value="false"/>
+			</bean>
+		</property>
+	</bean>
+
+	<!-- Exception Resolvers -->
+	<!-- Basic Sprout Exception Resolver -->
+	<bean id="exceptionResolver" class="nexcore.sprout.foundry.exception.hanlder.web.DefaultMvcExceptionResolver">
+		<property name="exceptionHandler" ref="exceptionHandler"/>
+	</bean>
+
+	<beans profile="exception-resolver-composite">
+		<description>
+			for Integration with other HandlerExceptionResolver.
+			ex) Default ExceptionResolver, Customized ExceptionResolver
+		</description>
+
+		<!-- Old Exception Resolver -->
+		<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+			<property name="defaultErrorView" value="common/error/error"/>
+		</bean>
+
+		<bean id="exceptionResolver" class="nexcore.sprout.foundry.exception.hanlder.web.ExceptionResolverComposite">
+			<property name="exceptionHandler" ref="exceptionHandler"/>
+		</bean>
+	</beans>
+</beans>   

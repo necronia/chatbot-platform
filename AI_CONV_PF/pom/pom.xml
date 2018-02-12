@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>nexcore.sprout</groupId>
+	<artifactId>simple-web</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>sprout-simple-web</name>
+	<packaging>war</packaging>
+
+	<url>http://nexcore.skcc.com</url>
+
+	<organization>
+		<name>SK Holdings</name>
+		<url>http://cc.sk.co.kr</url>
+	</organization>
+
+	<properties>
+		<java-version>1.6</java-version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
+		<commons-beanutils-bundle-version>1.9.2</commons-beanutils-bundle-version>
+		<commons-codec-version>1.10</commons-codec-version>
+		<commons-collections-version>3.2.2</commons-collections-version>
+		<commons-compress-version>1.10</commons-compress-version>
+		<commons-daemon-version>1.0.15</commons-daemon-version>
+		<commons-dbcp-version>1.4</commons-dbcp-version>
+		<commons-fileupload>1.3.1</commons-fileupload>
+		<commons-httpclient-bundle-version>3.1_7</commons-httpclient-bundle-version>
+		<commons-io-version>2.4</commons-io-version>
+		<commons-lang-version>2.6</commons-lang-version>
+		<commons-lang3-version>3.4</commons-lang3-version>
+		<commons-net-version>3.3</commons-net-version>
+		<commons-validator-version>1.4.1</commons-validator-version>
+		<ehcache-version>2.6.11</ehcache-version>
+		<hibernate-validator-version>5.2.2.Final</hibernate-validator-version>
+		<h2-version>1.4.190</h2-version>
+		<jackson2-version>2.6.2</jackson2-version>
+		<junit-version>4.11</junit-version>
+		<log4jdbc-remix>0.2.7</log4jdbc-remix>
+		<logback-version>1.1.3</logback-version>
+		<mariadb-connector-version>1.4.4</mariadb-connector-version>
+		<mybatis-version>3.3.0</mybatis-version>
+		<ojdbc-version>10.2.0.4.0</ojdbc-version>
+		<org.mybatis.spring.version>1.2.3</org.mybatis.spring.version>
+		<poi-version>3.12</poi-version>
+		<sprout-version>2.3.0.SNAPSHOT</sprout-version>
+		<slf4j-version>1.7.12</slf4j-version>
+		<springframework-version>3.2.15.RELEASE</springframework-version>
+		<springframework.security-version>3.2.8.RELEASE</springframework.security-version>
+		<springframework-mobile-device-version>1.1.4.RELEASE</springframework-mobile-device-version>
+		<springframework-loaded-version>1.2.4.RELEASE</springframework-loaded-version>
+		<tiles-version>3.0.5</tiles-version>
+		<userAgentUtils-version>1.18</userAgentUtils-version>
+		<validation-api-version>1.1.0.Final</validation-api-version>
+		
+		<!-- [END] *************** CORE *************** -->
+
+		<!-- [START] *************** PLUG IN *************** -->
+		<!-- Allows running the compiler in a separate process. If false it uses 
+			the built in compiler, while if true it will use an executable. -->
+		<compiler.fork>true</compiler.fork>
+		<maven-war-plugin-version>2.6</maven-war-plugin-version>
+		<maven-jar-plugin-version>2.6</maven-jar-plugin-version>
+
+		<!-- [END] *************** PLUG IN *************** -->
+
+		<!-- [START]ETC -->
+		<timestamp>${maven.build.timestamp}</timestamp>
+		<maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>codelds</id>
+			<url>https://code.lds.org/nexus/content/groups/main-repo</url>
+		</repository>
+		<repository>
+			<id>local-repo</id>
+			<name>local</name>
+			<url>file://${project.basedir}/pom/lib</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		
+		<!-- Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${springframework-version}</version>
+			<exclusions>
+				<!-- Exclude Commons Logging in favor of SLF4j -->
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${springframework-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aspects</artifactId>
+			<version>${springframework-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${springframework-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${springframework-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${springframework-version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${springframework-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.mobile</groupId>
+			<artifactId>spring-mobile-device</artifactId>
+			<version>${springframework-mobile-device-version}</version>
+		</dependency>
+		
+		<!--[start] spring security -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>${springframework.security-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>${springframework.security-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+			<version>${springframework.security-version}</version>
+		</dependency>
+		<!--[end] spring security -->
+
+		<!-- sprout -->
+		<dependency>
+			<groupId>nexcore.sprout</groupId>
+			<artifactId>sprout-foundry</artifactId>
+			<version>${sprout-version}</version>
+			<exclusions>
+				<!-- Exclude Commons Logging in favor of SLF4j -->
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>			
+		</dependency>
+
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${slf4j-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+			<version>${slf4j-version}</version>
+		</dependency>				
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback-version}</version>
+		</dependency>
+
+		<!-- @Inject -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+
+		<!-- Mybatis -->
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>${mybatis-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+			<version>${org.mybatis.spring.version}</version>
+		</dependency>
+
+		<!-- TILES -->
+		<dependency>
+			<groupId>org.apache.tiles</groupId>
+			<artifactId>tiles-api</artifactId>
+			<version>${tiles-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tiles</groupId>
+			<artifactId>tiles-jsp</artifactId>
+			<version>${tiles-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tiles</groupId>
+			<artifactId>tiles-el</artifactId>
+			<version>${tiles-version}</version>
+		</dependency>
+
+		<!-- Servlet -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson2-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-validator</groupId>
+			<artifactId>commons-validator</artifactId>
+			<version>${commons-validator-version}</version>
+			<exclusions>
+				<!-- Exclude Commons Logging in favor of SLF4j -->
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>			
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>${commons-codec-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${commons-io-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>${commons-fileupload}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>${commons-lang-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${commons-lang3-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>${commons-dbcp-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-core</artifactId>
+			<version>${ehcache-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>eu.bitwalker</groupId>
+			<artifactId>UserAgentUtils</artifactId>
+			<version>${userAgentUtils-version}</version>
+		</dependency>
+		<!-- Test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit-version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- 추가 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>springloaded</artifactId>
+			<version>${springframework-loaded-version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>${validation-api-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>${hibernate-validator-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.lazyluke</groupId>
+			<artifactId>log4jdbc-remix</artifactId>
+			<version>${log4jdbc-remix}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>${h2-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ibm.watson.developer_cloud</groupId>
+			<artifactId>conversation</artifactId>
+			<version>4.0.0</version>
+		</dependency>
+		
+		<!-- seunjeon -->
+		<dependency>
+	        <groupId>org.bitbucket.eunjeon</groupId>
+	        <artifactId>seunjeon_2.12</artifactId>
+	        <version>1.3.1</version>
+	    </dependency>
+		
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skipTests>false</skipTests>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java-version}</source>
+					<target>${java-version}</target>
+					<fork>${compiler.fork}</fork>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
