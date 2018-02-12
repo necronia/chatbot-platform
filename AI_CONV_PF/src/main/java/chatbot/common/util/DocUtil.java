@@ -1,7 +1,5 @@
 package chatbot.common.util;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,13 +27,10 @@ public class DocUtil {
 		try {
 			
 			String url = fileUrl;
-//			String url =  "http://10.158.122.205:8393/api/v10/document/content?collection=col_Rnd_Test&uri=file:///app/RnDPOCData/PocTest/Smat%2BFA/100/RND_Conversation_QNA_Guide.pptx";
 	    	String inputLine;
 	    	 
         	if(!"noFile".equals(fileUrl)){//URL 링크에 파일 존재 
     	    	InputStream is = new URL(url.toString()).openStream();
-//    	    	InputStream is = new FileInputStream(new File("c:\\projects\\temp\\ESF(Erase Stat Fail) 불량분석 업무절차.pptx"));
-//    	    	InputStream is = new FileInputStream(new File("c:\\projects\\temp\\PSF(Program Status Fail) 불량분석 업무절차.pptx"));
     			pptSlideShow  = new XMLSlideShow(is);
     			for (XSLFSlide slide : pptSlideShow.getSlides()) {
     		        for (XSLFShape sh : slide.getShapes()) {

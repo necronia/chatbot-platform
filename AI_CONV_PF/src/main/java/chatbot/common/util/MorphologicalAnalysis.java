@@ -15,7 +15,7 @@ import chatbot.conversation.dao.ChatbotDAO;
 
 public class MorphologicalAnalysis {
 	
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private static Logger logger = LoggerFactory.getLogger(MorphologicalAnalysis.class);
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static Map mAnalysis(String str, ChatbotDAO chatbotDAO) {
@@ -32,24 +32,26 @@ public class MorphologicalAnalysis {
 		
 		for (LNode node : nodes) {
 			
-            System.out.println("※※※※※※※※※※※※※※※※※※※");
-            System.out.println(node);
-            System.out.println(node.startPos());	//시작위치
-            System.out.println(node.morpheme().cost());
-            System.out.println(node.morpheme().key());
-            System.out.println(node.morpheme().productArity());
-            System.out.println(node.morpheme().productPrefix());
-            System.out.println(node.morpheme().surface());	//해당 글자
-            System.out.println(node.morpheme().feature());
-            System.out.println(node.morpheme().feature().apply(0));	//품사
-            System.out.println(node.morpheme().feature().toVector().getElem(0, 0));	//이것도 품사
-            System.out.println(node.morpheme().leftId());
-            System.out.println(node.morpheme().mType());
-            System.out.println(node.morpheme().poses());
-            System.out.println(node.morpheme().productIterator());
-            System.out.println(node.morpheme().rightId());
-            System.out.println("※※※※※※※※※※※※※※※※※※※");
-            
+			if (logger.isDebugEnabled()){
+	            logger.debug("※※※※※※※※※※※※※※※※※※※");
+	            logger.debug(node.toString());
+	            logger.debug(String.valueOf(node.startPos()));	//시작위치
+	            logger.debug(String.valueOf(node.morpheme().cost()));
+	            logger.debug(node.morpheme().key());
+	            logger.debug(String.valueOf(node.morpheme().productArity()));
+	            logger.debug(node.morpheme().productPrefix());
+	            logger.debug(node.morpheme().surface());	//해당 글자
+	            logger.debug(String.valueOf(node.morpheme().feature()));
+	            logger.debug(node.morpheme().feature().apply(0));	//품사
+	            logger.debug(node.morpheme().feature().toVector().getElem(0, 0));	//이것도 품사
+	            logger.debug(String.valueOf(node.morpheme().leftId()));
+	            logger.debug(node.morpheme().mType().toString());
+	            logger.debug(node.morpheme().poses().toString());
+	            logger.debug(node.morpheme().productIterator().toString());
+	            logger.debug(String.valueOf(node.morpheme().rightId()));
+	            logger.debug("※※※※※※※※※※※※※※※※※※※");
+			}
+			
             if (((String)node.morpheme().feature().apply(0)).matches("MM|SL|SN|SH|NNG|NNP|NNB|NR|MAG")){
             	mv.add(node.morpheme().surface());            	
             }
@@ -188,7 +190,7 @@ public class MorphologicalAnalysis {
 		return result;
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unused" })
+	@SuppressWarnings({ "rawtypes" })
 	public static String findJKS(Object strHashMap, int type) {
 		HashMap strMap = (HashMap)strHashMap;
 		String strS = strMap.get("SHORTCUT").toString();
@@ -210,7 +212,8 @@ public class MorphologicalAnalysis {
 		int jung = ((nTmp - jong) / 28) % 21; // 중성
 		int cho = (((nTmp - jong) / 28) - jung) / 21; // 초성
 
-		// System.out.println("초성:" + rCho[cho] + "\n" + "중성:" + rJung[jung] + "\n" + "종성:" + rJong[jong]);
+		logger.debug("초성:" + rCho[cho] + "\n" + "중성:" + rJung[jung] + "\n" + "종성:" + rJong[jong]);
+		
 		if ("H".equals(strType)) {
 			JKS = switchJKS(type, rJong[jong].isEmpty());
 		}else if ("E".equals(strType)) {
