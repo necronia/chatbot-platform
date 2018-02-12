@@ -78,7 +78,7 @@ public class ChatbotService {
 	}
 
 	// 공통영역 -> 메뉴검색 data 만들기
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ })
 	public void makeLunchmenuResult(ConvModelWrapper conv) {
 		String lunchDt = "오늘";
 		String lunchLoc = "";
