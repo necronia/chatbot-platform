@@ -53,13 +53,13 @@ public class ChatbotService {
 			// conv = ConvUtil.sendText(conv.getInputText(),
 			// conv.getContextString());
 		} else { // workspace가 공통 영역이지만 data를 만들어서 던져야 할 때 동작
-					// 날씨
+			// 날씨
 			if (conv.getIntentSize() > 0
 					&& ("weather".equals(conv.getIntent(0)) || "N".equals(conv.getCustomContext("weatherEntityYn")))) {
 				makeWeatherResult(conv, chatbotDAO);
 				conv = ConvUtil.sendText(conv);
 
-				// 점심메뉴
+			// 점심메뉴
 			} else if (conv.getIntentSize() > 0
 					&& "lunchmenu".equals(conv.getIntent(0))) {
 				makeLunchmenuResult(conv);
