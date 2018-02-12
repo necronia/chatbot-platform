@@ -107,7 +107,7 @@ public class ConvModelWrapper {
 			StringBuffer outputs = new StringBuffer();
 			while(it.hasNext()){
 				outputs.append(it.next());
-				if(!it.hasNext()){
+				if(it.hasNext()){
 					outputs.append("<br/>");
 				}
 			}
