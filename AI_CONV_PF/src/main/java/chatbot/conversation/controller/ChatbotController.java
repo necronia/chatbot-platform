@@ -47,7 +47,7 @@ public class ChatbotController {
     }
 	
 	@RequestMapping("/sendText")
-	public Model sendText(@RequestBody Map<String, String> map, Model model) throws Exception {      
+	public Model sendText(@RequestBody Map<String, String> map, Model model) throws Exception {        
     	if(logger.isInfoEnabled()){
     		logger.info("★★★★★★★★★★★★ In sendText controller..... : " + map);
     	}
