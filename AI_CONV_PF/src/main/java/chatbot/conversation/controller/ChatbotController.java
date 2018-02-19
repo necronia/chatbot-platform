@@ -40,7 +40,7 @@ public class ChatbotController {
 	@RequestMapping("/getChatbotPage")
     public String getChatbotPage(Map<String, String> map, Model model) {        
     	if(logger.isInfoEnabled()){
-    		logger.info("★★★★★★★★★★★★ In getChatbotPage controller.....");       
+    		logger.info("★★★★★★★★★★★★ In getChatbotPage controller.....");            
     	}    	
     	
         return "chatbot/chatbot";
