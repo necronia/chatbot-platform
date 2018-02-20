@@ -20,7 +20,7 @@ public class ActionViewResolver extends UrlBasedViewResolver implements Ordered 
 				return null;
 			}
 		}
-		return viewObj;
+		return viewObj; 
 	}
 
 }
