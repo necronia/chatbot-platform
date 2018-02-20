@@ -1,6 +1,6 @@
 package chatbot.common.ext;
 
-import java.util.Locale; 
+import java.util.Locale;  
 
 import org.springframework.core.Ordered;
 import org.springframework.web.servlet.View;
@@ -20,7 +20,7 @@ public class ActionViewResolver extends UrlBasedViewResolver implements Ordered 
 				return null;
 			}
 		}
-		return viewObj;
+		return viewObj; 
 	}
 
 }
