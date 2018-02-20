@@ -98,7 +98,7 @@ public class ConvModelWrapper {
 	}
 	
 	public void setConversationModelByCubeInfo(CubeInfoModel ciModel) throws JsonParseException, JsonMappingException, UnsupportedEncodingException, IOException {		
-		this.convModel.setInput(new InputModel().setText(ciModel.getInfo().getRec()));
+		this.convModel.setInput(new InputModel().setText(ciModel.getRec()));
 	}
 	
 	public String getConversationModelString() throws JsonProcessingException{

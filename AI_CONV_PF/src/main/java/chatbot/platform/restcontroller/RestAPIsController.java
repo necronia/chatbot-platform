@@ -7,15 +7,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import chatbot.conversation.dao.ChatbotDAO;
 import chatbot.conversation.service.ChatbotService;
 import chatbot.platform.model.conv.ConversationModel;
-import chatbot.platform.model.cube.CubeConvModel;
 import chatbot.platform.model.cube.CubeInfoModel;
-import chatbot.platform.model.cube.InfoModel;
 import chatbot.platform.util.ConvModelWrapper;
 import chatbot.platform.util.CubeModelWrapper;
 
@@ -48,6 +43,7 @@ public class RestAPIsController{
 		
 		// 질의내용 DB저장
     	chatbotDAO.insertCubeInfo(cube.makeCubeConvInfo(conv.getInputText(), (String)conv.getConversationModel().getOutput().getText().get(0), conv.getContextString()));
+    	cube.convertQuestionToAnswer();
 		    	
 		if(logger.isDebugEnabled()){
 			logger.debug("☆☆☆☆☆☆☆☆☆☆☆☆ getSimpleConversation 2 S ☆☆☆☆☆☆☆☆☆☆☆☆");

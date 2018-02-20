@@ -120,24 +120,36 @@
 	
 	<insert id="insertCubeInfo" parameterType="chatbot.platform.model.cube.CubeConvModel">
 			/* Chartbot.insertCubeInfo */
-			INSERT 
-			INTO CUBE_CONV_INFO (
-					UNIQUENAME
-				,	CHANNELID
-				,   QUESTION
-				,   ANSWER
-				,   CONTEXT
-				,   REGUSRID
-				,   REGDT				    
-			) VALUES (
-					#{uniquename}
-				,	#{channelid}
-				,   #{question}
-				,   #{answer}
-				,   #{context}
-				,   #{uniquename}
-				,   TO_CHAR(SYSDATE, 'yyyymmddhh24miss')
+			MERGE INTO CUBE_CONV_INFO
+			USING DUAL
+			ON (
+				UNIQUENAME = #{uniquename}
+				AND CHANNELID = #{channelid}
 			)
+			WHEN MATCHED THEN
+				UPDATE SET QUESTION = #{question},
+				           ANSWER = #{answer},
+				           CONTEXT = #{context},
+				           UPDUSRID = #{uniquename},
+				           UPDDT = TO_CHAR(SYSDATE, 'yyyymmddhh24miss')
+	        WHEN NOT MATCHED THEN
+	        	INSERT (
+						UNIQUENAME
+					,	CHANNELID
+					,   QUESTION
+					,   ANSWER
+					,   CONTEXT
+					,   REGUSRID
+					,   REGDT				    
+				) VALUES (
+						#{uniquename}
+					,	#{channelid}
+					,   #{question}
+					,   #{answer}
+					,   #{context}
+					,   #{uniquename}
+					,   TO_CHAR(SYSDATE, 'yyyymmddhh24miss')
+				)
 	</insert>
 	
 </mapper>

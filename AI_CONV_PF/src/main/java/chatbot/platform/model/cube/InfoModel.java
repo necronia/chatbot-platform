@@ -9,9 +9,6 @@ public class InfoModel {
 	@JsonProperty("channelid")
 	private String channelid;
 	
-	@JsonProperty("rec")
-	private String rec;
-	
 	/********** GETTER / SETTER **********/
 
 	public String getUniquename() {
@@ -28,16 +25,5 @@ public class InfoModel {
 
 	public void setChannelid(String channelid) {
 		this.channelid = channelid;
-	}
-
-	public String getRec() {
-		return rec;
-	}
-
-	public InfoModel setRec(String rec) {
-		this.rec = rec;
-		return this;
-	}
-	
-	
+	}	
 }

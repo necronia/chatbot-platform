@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -20,25 +21,34 @@ public class CubeModelWrapper {
 	private ObjectMapper mapper;
 	
 	public CubeModelWrapper(){
+		this.logger = LoggerFactory.getLogger(this.getClass());	
 		this.mapper = new ObjectMapper();
+		this.infoModel = new CubeInfoModel();
+		this.convModel = new CubeConvModel();
 	}
 	
 	public CubeModelWrapper(CubeInfoModel infoModel){
+		this.logger = LoggerFactory.getLogger(this.getClass());	
 		this.mapper = new ObjectMapper();
 		this.infoModel = infoModel;		
+		this.convModel = new CubeConvModel();
 	}
 	
 	public CubeModelWrapper(CubeConvModel convModel){
+		this.logger = LoggerFactory.getLogger(this.getClass());	
 		this.mapper = new ObjectMapper();
+		this.infoModel = new CubeInfoModel();
 		this.convModel = convModel;		
 	}
 	
 	public CubeModelWrapper(String ciModel) throws JsonParseException, JsonMappingException, UnsupportedEncodingException, IOException{
+		this.logger = LoggerFactory.getLogger(this.getClass());	
 		this.mapper = new ObjectMapper();
-		this.infoModel = mapper.readValue(ciModel.getBytes("UTF-8"), CubeInfoModel.class);
+		this.infoModel = mapper.readValue(ciModel.getBytes("UTF-8"), CubeInfoModel.class);		
 		if (logger.isDebugEnabled()){
 			logger.debug("★★★★★★★★★★★★ CubeModelWrapper created : " + this.mapper.writeValueAsString(this.infoModel));
 		}
+		this.convModel = new CubeConvModel();
 	}
 	
 	public CubeModelWrapper setCubeInfoModel(CubeInfoModel infoModel){
@@ -64,18 +74,16 @@ public class CubeModelWrapper {
 	}
 
 	public CubeConvModel makeCubeConvInfo(String question, String answer, String contextString) {
-		this.convModel.setUNIQUENAME(this.infoModel.getInfo().getUniquename());
-		this.convModel.setCHANNELID(this.infoModel.getInfo().getChannelid());
-		this.convModel.setQUESTION(question);
-		this.convModel.setANSWER(answer);
-		this.convModel.setCONTEXT(contextString);
-		
+		this.convModel.setUniquename(this.infoModel.getInfo().getUniquename());
+		this.convModel.setChannelid(this.infoModel.getInfo().getChannelid());
+		this.convModel.setQuestion(question);
+		this.convModel.setAnswer(answer);
+		this.convModel.setContext(contextString);		
 		
 		return this.convModel;
 	}
 	
 	public void convertQuestionToAnswer(){
-		this.infoModel.setInfo(this.infoModel.getInfo().setRec(this.convModel.getANSWER()));
-		
+		this.infoModel.setRec(this.convModel.getAnswer());		
 	}
 }
