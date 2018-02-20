@@ -34,8 +34,9 @@ public class InfoModel {
 		return rec;
 	}
 
-	public void setRec(String rec) {
+	public InfoModel setRec(String rec) {
 		this.rec = rec;
+		return this;
 	}
 	
 	

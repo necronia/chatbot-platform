@@ -24,6 +24,7 @@ import chatbot.platform.model.conv.InputModel;
 import chatbot.platform.model.conv.IntentModel;
 import chatbot.platform.model.conv.OutputModel;
 import chatbot.platform.model.cube.CubeInfoModel;
+import chatbot.platform.model.cube.InfoModel;
 
 public class ConvModelWrapper {
 	
@@ -229,6 +230,15 @@ public class ConvModelWrapper {
 	public void clearCustomContext() {
 		ContextModel cm = this.convModel.getContext();
 		cm.setCustom_context(null);
+		cm.setSlot_val1(null);
+		cm.setSlot_val2(null);
+		cm.setSlot_val3(null);
+		cm.setSlot_val4(null);
+		cm.setSlot_val5(null);
+		cm.setSlot_val6(null);
+		cm.setSlot_val7(null);
+		cm.setSlot_val8(null);
+		cm.setSlot_val9(null);
 		this.convModel.setContext(this.convModel.getContext().setCustom_context(null));		
-	}	
+	}
 }

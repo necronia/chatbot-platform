@@ -1,8 +1,5 @@
 package chatbot.platform.restcontroller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +7,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import chatbot.conversation.dao.ChatbotDAO;
 import chatbot.conversation.service.ChatbotService;
 import chatbot.platform.model.conv.ConversationModel;
-import chatbot.platform.model.conv.ConversationSimpleModel;
+import chatbot.platform.model.cube.CubeConvModel;
+import chatbot.platform.model.cube.CubeInfoModel;
+import chatbot.platform.model.cube.InfoModel;
 import chatbot.platform.util.ConvModelWrapper;
+import chatbot.platform.util.CubeModelWrapper;
 
 @RestController
 @RequestMapping("/api")
@@ -28,31 +31,32 @@ public class RestAPIsController{
 	ChatbotService chatbotService;
 	
 	@RequestMapping("/getSimpleConversation")
-	public ConversationSimpleModel getSimpleConversation(@RequestBody String str) throws Exception{
+	public CubeInfoModel getSimpleConversation(@RequestBody String str) throws Exception{
 		
 		if(logger.isDebugEnabled()){
 			logger.debug("☆☆☆☆☆☆☆☆☆☆☆☆ getSimpleConversation 1 S ☆☆☆☆☆☆☆☆☆☆☆☆");
 			logger.debug(str);
 			logger.debug("☆☆☆☆☆☆☆☆☆☆☆☆ getSimpleConversation 1 E ☆☆☆☆☆☆☆☆☆☆☆☆");
-		}		
+		}
 		
+		// CubeInfoModel 생성
+		CubeModelWrapper cube = new CubeModelWrapper(str);
+				
 		ConvModelWrapper conv = new ConvModelWrapper();
-		conv.setConversationModelBySimpleString(str);
+		conv.setConversationModelByCubeInfo(cube.getCubeInfoModel());
 		conv = chatbotService.sendText(conv);
 		
 		// 질의내용 DB저장
-		Map<String, String> qMap = new HashMap<String, String>();
-		qMap.put("text", conv.getInputText());
-		
-    	//chatbotDAO.setCubeInfo(cm);
-		
+    	chatbotDAO.insertCubeInfo(cube.makeCubeConvInfo(conv.getInputText(), (String)conv.getConversationModel().getOutput().getText().get(0), conv.getContextString()));
+		    	
 		if(logger.isDebugEnabled()){
 			logger.debug("☆☆☆☆☆☆☆☆☆☆☆☆ getSimpleConversation 2 S ☆☆☆☆☆☆☆☆☆☆☆☆");
-			logger.debug(conv.getConversationSimpleModelString());
+			logger.debug(conv.getConversationModelString());
+			logger.debug(cube.getCubeInfoModelString());
 			logger.debug("☆☆☆☆☆☆☆☆☆☆☆☆ getSimpleConversation 2 E ☆☆☆☆☆☆☆☆☆☆☆☆");
 		}
 		
-		return conv.getConversationSimpleModel();
+		return cube.getCubeInfoModel();
 	}
 	
 	@RequestMapping("/getConversation")

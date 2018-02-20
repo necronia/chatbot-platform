@@ -1,6 +1,9 @@
 package chatbot.platform.model.cube;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import chatbot.platform.util.ConvModelWrapper;
 
 public class CubeConvModel {	
 	@JsonProperty("UNIQUENAME")
@@ -13,20 +16,23 @@ public class CubeConvModel {
 	private String QUESTION;
 	
 	@JsonProperty("ANSWER")
-	private String ANSWER;
-	
-	@JsonProperty("REC")
-	private String REC;
+	private String ANSWER;	
 	
 	@JsonProperty("CONTEXT")
 	private String CONTEXT;
 	
-	@JsonProperty("REGUSRID")
-	private String REGUSRID;
-	
-	@JsonProperty("REGDT")
-	private String REGDT;
-	
+	public CubeConvModel(CubeInfoModel ciModel, ConvModelWrapper conv) {
+		this.UNIQUENAME = ciModel.getInfo().getUniquename();
+		this.CHANNELID = ciModel.getInfo().getChannelid();
+		this.QUESTION = conv.getInputText();
+		this.ANSWER = conv.getConversationModel().getOutput().getText().get(0);
+		try {
+			this.CONTEXT = conv.getContextString();
+		} catch (JsonProcessingException e) {
+			this.CONTEXT = "JsonProcessingException";
+		}
+	}
+
 	/********** GETTER / SETTER **********/
 
 	public String getUNIQUENAME() {
@@ -59,15 +65,7 @@ public class CubeConvModel {
 
 	public void setANSWER(String aNSWER) {
 		ANSWER = aNSWER;
-	}
-
-	public String getREC() {
-		return REC;
-	}
-
-	public void setREC(String rEC) {
-		REC = rEC;
-	}
+	}	
 
 	public String getCONTEXT() {
 		return CONTEXT;
@@ -75,21 +73,5 @@ public class CubeConvModel {
 
 	public void setCONTEXT(String cONTEXT) {
 		CONTEXT = cONTEXT;
-	}
-
-	public String getREGUSRID() {
-		return REGUSRID;
-	}
-
-	public void setREGUSRID(String rEGUSRID) {
-		REGUSRID = rEGUSRID;
-	}
-
-	public String getREGDT() {
-		return REGDT;
-	}
-
-	public void setREGDT(String rEGDT) {
-		REGDT = rEGDT;
 	}
 }

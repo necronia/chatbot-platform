@@ -1,6 +1,7 @@
 package chatbot.platform.model.conv;
 
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -16,6 +17,9 @@ public class EntityModel {
 	
 	@JsonProperty("confidence")
 	private Double confidence;
+	
+	@JsonProperty("metadata")
+	private Map<String, Object> metadata;
 
 	/********** GETTER / SETTER **********/
 
@@ -49,5 +53,14 @@ public class EntityModel {
 
 	public void setConfidence(Double confidence) {
 		this.confidence = confidence;
+	}
+
+	public Map<String, Object> getMetadata() {
+		return metadata;
+	}
+
+	public void setMetadata(Map<String, Object> metadata) {
+		this.metadata = metadata;
 	}	
+	
 }
