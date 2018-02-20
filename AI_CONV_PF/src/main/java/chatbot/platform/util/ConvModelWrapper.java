@@ -185,11 +185,26 @@ public class ConvModelWrapper {
 		return this.convModel.getContext().getCustom_context().get(key);
 	}
 	
+	public Object getPermContext(String key){
+		if (this.convModel.getContext().getPerm_context() == null){
+			return new String();
+		}
+		return this.convModel.getContext().getPerm_context().get(key);
+	}
+	
 	public void setCustomContext(Map<String, Object> customContext){
 		ContextModel cm = this.convModel.getContext();
 		Map<String, Object> m = cm.getCustom_context();
 		m.putAll(customContext);
 		cm.setCustom_context(m);
+		this.convModel.setContext(cm);;
+	}
+	
+	public void setPermContext(Map<String, Object> permContext){
+		ContextModel cm = this.convModel.getContext();
+		Map<String, Object> m = cm.getPerm_context();
+		m.putAll(permContext);
+		cm.setPerm_context(m);
 		this.convModel.setContext(cm);;
 	}
 	
@@ -201,6 +216,17 @@ public class ConvModelWrapper {
 		}
 		m.put(str, obj);
 		cm.setCustom_context(m);
+		this.convModel.setContext(cm);
+	}
+	
+	public void setPermContext(String str, Object obj){
+		ContextModel cm = this.convModel.getContext();
+		Map<String, Object> m = new HashMap<String, Object>();
+		if (cm.getPerm_context() != null){
+			m = cm.getPerm_context();
+		}
+		m.put(str, obj);
+		cm.setPerm_context(m);
 		this.convModel.setContext(cm);
 	}
 	

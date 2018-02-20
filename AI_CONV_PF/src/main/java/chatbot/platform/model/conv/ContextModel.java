@@ -20,6 +20,9 @@ public class ContextModel {
 	@JsonProperty("custom_context")
 	private Map<String, Object> custom_context;
 	
+	@JsonProperty("perm_context")
+	private Map<String, Object> perm_context;
+	
 	@JsonProperty("slot_val1")
 	private String slot_val1;
 	
@@ -162,4 +165,12 @@ public class ContextModel {
 	public void setSlot_val9(String slot_val9) {
 		this.slot_val9 = slot_val9;
 	}
+
+	public Map<String, Object> getPerm_context() {
+		return perm_context;
+	}
+
+	public void setPerm_context(Map<String, Object> perm_context) {
+		this.perm_context = perm_context;
+	}	
 }
