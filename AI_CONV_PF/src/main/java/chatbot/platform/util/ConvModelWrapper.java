@@ -266,4 +266,10 @@ public class ConvModelWrapper {
 		cm.setSlot_val9(null);
 		this.convModel.setContext(this.convModel.getContext().setCustom_context(null));		
 	}
+	
+	public void clearPermContext(){
+		ContextModel cm = this.convModel.getContext();
+		cm.setPerm_context(null);
+		this.convModel.setContext(this.convModel.getContext().setPerm_context(null));		
+	}
 }

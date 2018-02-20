@@ -170,7 +170,8 @@ public class ContextModel {
 		return perm_context;
 	}
 
-	public void setPerm_context(Map<String, Object> perm_context) {
+	public ContextModel setPerm_context(Map<String, Object> perm_context) {
 		this.perm_context = perm_context;
+		return this;
 	}	
 }
