@@ -24,7 +24,6 @@ import chatbot.platform.model.conv.InputModel;
 import chatbot.platform.model.conv.IntentModel;
 import chatbot.platform.model.conv.OutputModel;
 import chatbot.platform.model.cube.CubeInfoModel;
-import chatbot.platform.model.cube.InfoModel;
 
 public class ConvModelWrapper {
 	
