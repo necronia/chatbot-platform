@@ -36,8 +36,11 @@ public class ConvUtil {
 	
 	private static String AIBRIL_ACCOUNT_USER;
 	private static String AIBRIL_ACCOUNT_PWD;
+	public static String CONVERSATION_WORKSPACE_MAIN;
 	public static String CONVERSATION_WORKSPACE_COMMON;
-	public static String CONVERSATION_WORKSPACE_TASK;
+	public static String CONVERSATION_WORKSPACE_TASK_HR1;
+	public static String CONVERSATION_WORKSPACE_TASK_HR2;
+	public static String CONVERSATION_WORKSPACE_TERMS;
 
 	@Value("${aibril.credential.user}")
 	private void setAibrilAccountUser(String str){ConvUtil.AIBRIL_ACCOUNT_USER = str;}
@@ -45,21 +48,30 @@ public class ConvUtil {
 	@Value("${aibril.credential.pwd}")
 	private void setAibrilAccountPwd(String str){ConvUtil.AIBRIL_ACCOUNT_PWD = str;}
 	
+	@Value("${aibril.workspace.main}")
+	private void setConversationWorkspaceMain(String str){ConvUtil.CONVERSATION_WORKSPACE_MAIN = str;}
+	
 	@Value("${aibril.workspace.common}")
 	private void setConversationWorkspaceCommon(String str){ConvUtil.CONVERSATION_WORKSPACE_COMMON = str;}
 	
-	@Value("${aibril.workspace.task}")
-	private void setConversationWorkspaceTask(String str){ConvUtil.CONVERSATION_WORKSPACE_TASK = str;}	
-
+	@Value("${aibril.workspace.task.hr1}")
+	private void setConversationWorkspaceTaskHr1(String str){ConvUtil.CONVERSATION_WORKSPACE_TASK_HR1 = str;}
+	
+	@Value("${aibril.workspace.task.hr2}")
+	private void setConversationWorkspaceTaskHr2(String str){ConvUtil.CONVERSATION_WORKSPACE_TASK_HR2 = str;}
+	
+	@Value("${aibril.workspace.terms}")
+	private void setConversationWorkspaceTerms(String str){ConvUtil.CONVERSATION_WORKSPACE_TERMS = str;}	
+	
 	@Autowired
 	SqlSessionTemplate sqlSessionTemplate;
 	
-	@SuppressWarnings({ "rawtypes" })
-	public static ConvModelWrapper sendText(ConvModelWrapper conv) throws Exception{
+	@SuppressWarnings({ "unused", "rawtypes" })
+	public static ConvModelWrapper sendText(ConvModelWrapper conv, ChatbotDAO chatbotDAO) throws Exception{
 		Conversation service = new Conversation(Conversation.VERSION_DATE_2017_05_26);
 		service.setUsernameAndPassword(ConvUtil.AIBRIL_ACCOUNT_USER, ConvUtil.AIBRIL_ACCOUNT_PWD);
 
-		String[] workspaceId ={ ConvUtil.CONVERSATION_WORKSPACE_TASK, ConvUtil.CONVERSATION_WORKSPACE_COMMON };
+		String[] workspaceId ={ ConvUtil.CONVERSATION_WORKSPACE_MAIN, ConvUtil.CONVERSATION_WORKSPACE_TASK_HR1, ConvUtil.CONVERSATION_WORKSPACE_TASK_HR2, ConvUtil.CONVERSATION_WORKSPACE_COMMON };
 		
 		if(logger.isDebugEnabled()){
 			logger.debug("☆☆☆☆☆☆☆☆☆☆☆☆ sendText 1 S ☆☆☆☆☆☆☆☆☆☆☆☆");
@@ -69,8 +81,6 @@ public class ConvUtil {
 		
 		InputData input = new InputData.Builder(conv.getInputText()).build();		
 		Context context = new Context();
-		
-		MessageResponse aibrilResponse = new MessageResponse();
 		
 		try {
 			context = conv.getContext();
@@ -82,13 +92,60 @@ public class ConvUtil {
 			e.printStackTrace();
 		}
 		
-		//workspace 하나로 쓰기
-//		MessageOptions options = new MessageOptions.Builder(workspaceId).input(input).context(context).build();
-//		MessageResponse response = service.message(options).execute();
-//		
-//		aibrilResponse = response;
+		// 1. Main workspace에서 workspace 분기		
+		// 1.1 sub workspace가 없으면 선택을 위한 intent 조회/분기
+		// 1.2 custom_context에 workspace 초기화가 있으면 main으로 분기		
+		if ((conv.getWorkspace() == null) || (conv.getWorkspace() != null && conv.getBranchExited())){
+			context.put("workspace", ConvUtil.CONVERSATION_WORKSPACE_MAIN);
+			MessageOptions options = new MessageOptions.Builder(ConvUtil.CONVERSATION_WORKSPACE_MAIN).input(input).context(context).build();
+			MessageResponse aibrilResponse = service.message(options).execute();
+			conv = new ConvModelWrapper(JSONObject.toJSONString(aibrilResponse));
+			
+			if ("search_dictionary".equals(conv.getIntent(0))){
+				context.put("workspace", ConvUtil.CONVERSATION_WORKSPACE_TERMS);
+				options = new MessageOptions.Builder(ConvUtil.CONVERSATION_WORKSPACE_TERMS).input(input).context(context).build();
+				aibrilResponse = service.message(options).execute();
+				conv = new ConvModelWrapper(JSONObject.toJSONString(aibrilResponse));
+//				conv.setCustomContext("term_explanation", "커스텀 용어집");
+				
+				//용어집 검색
+				String description = new String();
+				Map wordMap = (HashMap)findTermsDetailInText(conv.getInputText(), chatbotDAO);
+		    	ArrayList checkWordList = (ArrayList) wordMap.get("Term");
+		    	
+		    	if (((HashMap)checkWordList.get(0)).get("DESCRIPTION") == null || "".equals(((HashMap)checkWordList.get(0)).get("DESCRIPTION"))){
+		    		description = MorphologicalAnalysis.findJKS(checkWordList.get(0), 0);							
+				}else{
+					description = MorphologicalAnalysis.findJKS(checkWordList.get(0), 2) + ((HashMap)checkWordList.get(0)).get("DESCRIPTION");
+				}
+				
+				conv.setOutputText(description);
+				
+			}else if("search_hr1".equals(conv.getIntent(0))){
+				context.put("workspace", ConvUtil.CONVERSATION_WORKSPACE_TASK_HR1);
+				options = new MessageOptions.Builder(ConvUtil.CONVERSATION_WORKSPACE_TASK_HR1).input(input).context(context).build();
+				aibrilResponse = service.message(options).execute();
+				conv = new ConvModelWrapper(JSONObject.toJSONString(aibrilResponse));
+			}else if("search_hr2".equals(conv.getIntent(0))){
+				context.put("workspace", ConvUtil.CONVERSATION_WORKSPACE_TASK_HR2);
+				options = new MessageOptions.Builder(ConvUtil.CONVERSATION_WORKSPACE_TASK_HR2).input(input).context(context).build();
+				aibrilResponse = service.message(options).execute();
+				conv = new ConvModelWrapper(JSONObject.toJSONString(aibrilResponse));
+			}else{
+				context.put("workspace", ConvUtil.CONVERSATION_WORKSPACE_COMMON);
+				options = new MessageOptions.Builder(ConvUtil.CONVERSATION_WORKSPACE_COMMON).input(input).context(context).build();
+				aibrilResponse = service.message(options).execute();
+				conv = new ConvModelWrapper(JSONObject.toJSONString(aibrilResponse));
+			}
+		}else if (conv.getWorkspace() != null){
+			// 2 sub workspace가 존재하면 계속 진행			
+			context.put("workspace", conv.getWorkspace());
+			MessageOptions options = new MessageOptions.Builder(conv.getWorkspace()).input(input).context(context).build();
+			MessageResponse aibrilResponse = service.message(options).execute();
+			conv = new ConvModelWrapper(JSONObject.toJSONString(aibrilResponse));
+		}		
 		
-		//1. task workspace에서 intents 찾기
+		/*
 		//2.업무 workspace 에서 없으면 공통 workspace에서 intents 찾기
 		for (int i=0 ; i<workspaceId.length ; i++){
 		
@@ -103,7 +160,7 @@ public class ConvUtil {
 				break;
 			}
 	
-//일상 용어 버전			
+			//일상 용어 버전			
 			else{
 				 if(ConvUtil.CONVERSATION_WORKSPACE_COMMON.equals((context.get("workspace")))){//반복 시나리오에서 응답하는말(숫자, 용어)은 intents가 존재 x, 그래서 null이 return 되는걸 막기위해
 					 aibrilResponse = response;
@@ -126,16 +183,17 @@ public class ConvUtil {
 //					}
 //			}
 		}
+		*/
 			
-		ConvModelWrapper wrapper = new ConvModelWrapper(JSONObject.toJSONString(aibrilResponse));
+		
 				
 		if(logger.isDebugEnabled()){
 			logger.debug("☆☆☆☆☆☆☆☆☆☆☆☆ sendText 2 S ☆☆☆☆☆☆☆☆☆☆☆☆");
-			logger.debug(wrapper.getConversationModelString());
+			logger.debug(conv.getConversationModelString());
 			logger.debug("☆☆☆☆☆☆☆☆☆☆☆☆ sendText 2 E ☆☆☆☆☆☆☆☆☆☆☆☆");
 		}		
 				
-		return wrapper;
+		return conv;
 	}	
 	
 	//형태소 분석기

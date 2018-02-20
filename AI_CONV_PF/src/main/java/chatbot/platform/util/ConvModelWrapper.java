@@ -2,6 +2,7 @@ package chatbot.platform.util;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -17,12 +18,13 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.watson.developer_cloud.conversation.v1.model.Context;
 
-import chatbot.platform.model.ContextModel;
-import chatbot.platform.model.ConversationModel;
-import chatbot.platform.model.ConversationSimpleModel;
-import chatbot.platform.model.EntityModel;
-import chatbot.platform.model.InputModel;
-import chatbot.platform.model.IntentModel;
+import chatbot.platform.model.conv.ContextModel;
+import chatbot.platform.model.conv.ConversationModel;
+import chatbot.platform.model.conv.ConversationSimpleModel;
+import chatbot.platform.model.conv.EntityModel;
+import chatbot.platform.model.conv.InputModel;
+import chatbot.platform.model.conv.IntentModel;
+import chatbot.platform.model.conv.OutputModel;
 
 public class ConvModelWrapper {
 	
@@ -186,6 +188,7 @@ public class ConvModelWrapper {
 	}
 	
 	public String getIntent(int index){
+		if (this.convModel.getIntents().size() == 0) return null;
 		return ((IntentModel)this.convModel.getIntents().get(index)).getIntent();
 	}
 	
@@ -198,6 +201,7 @@ public class ConvModelWrapper {
 	}
 	
 	public String getEntity(int index){
+		if (this.convModel.getEntities().size() == 0) return null;
 		return ((EntityModel)this.convModel.getEntities().get(index)).getEntity();
 	}
 	
@@ -206,6 +210,9 @@ public class ConvModelWrapper {
 	}	
 	
 	public Object getCustomContext(String key){
+		if (this.convModel.getContext().getCustom_context() == null){
+			return new String();
+		}
 		return this.convModel.getContext().getCustom_context().get(key);
 	}
 	
@@ -215,6 +222,17 @@ public class ConvModelWrapper {
 		m.putAll(customContext);
 		cm.setCustom_context(m);
 		this.convModel.setContext(cm);;
+	}
+	
+	public void setCustomContext(String str, Object obj){
+		ContextModel cm = this.convModel.getContext();
+		Map<String, Object> m = new HashMap<String, Object>();
+		if (cm.getCustom_context() != null){
+			m = cm.getCustom_context();
+		}
+		m.put(str, obj);
+		cm.setCustom_context(m);
+		this.convModel.setContext(cm);
 	}
 	
 	public int getEntitySize(){
@@ -227,5 +245,16 @@ public class ConvModelWrapper {
 	
 	public Double getEntityLocation(int index, int location){
 		return ((EntityModel)this.convModel.getEntities().get(index)).getLocation().get(location);
+	}
+	
+	public void setOutputText(String str){
+		OutputModel om = this.convModel.getOutput();
+		List<String> list = new ArrayList<String>();
+		list.add(str);
+		this.convModel.setOutput(om.setText(list));
+	}
+	
+	public boolean getBranchExited(){
+		return this.convModel.getContext().getSystem().isBranch_exited();
 	}
 }

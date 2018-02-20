@@ -211,10 +211,10 @@ public class MorphologicalAnalysis {
 		int jong = nTmp % 28; // 종성
 		int jung = ((nTmp - jong) / 28) % 21; // 중성
 		int cho = (((nTmp - jong) / 28) - jung) / 21; // 초성
-
-		logger.debug("초성:" + rCho[cho] + "\n" + "중성:" + rJung[jung] + "\n" + "종성:" + rJong[jong]);
 		
+	
 		if ("H".equals(strType)) {
+			logger.debug("초성:" + rCho[cho] + "\n" + "중성:" + rJung[jung] + "\n" + "종성:" + rJong[jong]);
 			JKS = switchJKS(type, rJong[jong].isEmpty());
 		}else if ("E".equals(strType)) {
 			// JKS = switchJKS(type, String.valueOf(sTest).toLowerCase().matches("^[adefghijopqrstuvwxyz]?$"));

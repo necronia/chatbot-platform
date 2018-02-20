@@ -1,5 +1,8 @@
 package chatbot.platform.restcontroller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,13 +12,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import chatbot.conversation.dao.ChatbotDAO;
 import chatbot.conversation.service.ChatbotService;
-import chatbot.platform.model.ConversationModel;
-import chatbot.platform.model.ConversationSimpleModel;
+import chatbot.platform.model.conv.ConversationModel;
+import chatbot.platform.model.conv.ConversationSimpleModel;
 import chatbot.platform.util.ConvModelWrapper;
 
 @RestController
+@RequestMapping("/api")
 public class RestAPIsController{
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	@Autowired
+	ChatbotDAO chatbotDAO;
 	
 	@Autowired
 	ChatbotService chatbotService;
@@ -32,6 +39,12 @@ public class RestAPIsController{
 		ConvModelWrapper conv = new ConvModelWrapper();
 		conv.setConversationModelBySimpleString(str);
 		conv = chatbotService.sendText(conv);
+		
+		// 질의내용 DB저장
+		Map<String, String> qMap = new HashMap<String, String>();
+		qMap.put("text", conv.getInputText());
+		
+    	//chatbotDAO.setCubeInfo(cm);
 		
 		if(logger.isDebugEnabled()){
 			logger.debug("☆☆☆☆☆☆☆☆☆☆☆☆ getSimpleConversation 2 S ☆☆☆☆☆☆☆☆☆☆☆☆");

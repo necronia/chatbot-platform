@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Chatbot">
+	<select id="selectTermDescription" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+			SELECT  /*Chartbot.selectTermDescription*/
+						CODE_VAL,SHORTCUT
+						, FULLNAME
+						, CLASSIFICATION
+						, DESCRIPTION 
+			FROM TERM_DICTIONARY
+		<where>
+			<if test="code != null">
+				CODE_VAL = #{code}
+			</if>
+			<if test="value != null">
+				SHORTCUT = #{value}
+			</if>
+		</where>		
+	</select>
+	
+	<select id="selectFullNameByShortCut" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+				SELECT   /*Chartbot.selectFullNameByShortCut*/
+							 FULLNAME  as FULLNAME 
+							,SHORTCUT as SHORTCUT
+							,CODE_VAL as CODEVAL
+				FROM TERM_DICTIONARY
+		<where>
+				CODE_VAL IN  
+					<foreach item="item" index="index" collection="keyList" open="(" separator="," close=")">
+	        		               #{item}
+	  			               </foreach>
+		</where>
+	</select>
+	
+	<select id="selectTermsFromDB" parameterType="java.lang.String" resultType="java.util.HashMap">
+				SELECT   /*Chartbot.selectTermsFromDB*/
+   					TO_CHAR(SUBSTR(CONTENT, 1, 4000)) as CONTENT
+				FROM T_DICTIONARY_C
+		        WHERE TITLE_NOSPACE = LOWER(REGEXP_REPLACE(#{value},'[-_ ]+','')) OR TITLE_ENG_NOSPACE = LOWER(REGEXP_REPLACE(#{value},'[-_ ]+',''))
+		        AND ROWNUM=1
+	</select>
+	
+	<insert id="insertQuestion" parameterType="java.util.HashMap">
+				INSERT /*Chartbot.insertQuestion*/
+				INTO		QUESTION_LOG (
+						QUESTION
+					,	DATETIME
+					,   SOURCE
+				) VALUES (
+						#{text}
+					,	TO_CHAR(SYSDATE, 'yyyymmddhh24miss')
+					,   'L'
+				)
+	</insert>
+	
+		<select id="checkWordList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		    /*CHARTBOT.CHECKWORDLIST*/
+			SELECT DISTINCT CODE_VAL, SHORTCUT, FULLNAME, CLASSIFICATION, DESCRIPTION, FILE_NAME, TYPE 
+			  FROM 			  
+				(
+					SELECT  
+								CODE_VAL  AS CODE_VAL
+								,SHORTCUT AS SHORTCUT
+								, SHORTCUT_NOSPACE								
+								, FULLNAME AS FULLNAME
+								, FULLNAME_NOSPACE
+								, CLASSIFICATION AS CLASSIFICATION
+								, DESCRIPTION AS DESCRIPTION
+								,'TYPE1' AS TYPE 
+					FROM TERM_DICTIONARY
+					WHERE SHORTCUT_NOSPACE = LOWER(REGEXP_REPLACE(#{value},'[-_ ]+','')) OR FULLNAME_NOSPACE = LOWER(REGEXP_REPLACE(#{value},'[-_ ]+',''))
+						UNION ALL
+					SELECT DIC_CODE
+								,TO_CHAR(TITLE)
+								,TO_CHAR(TITLE_NOSPACE)
+								,TO_CHAR(NVL(TITLE_ENG,TITLE))
+								,TO_CHAR(NVL(TITLE_ENG_NOSPACE,TITLE_NOSPACE))
+								,'N'
+								,DBMS_LOB.SUBSTR( CONTENT, 4000, 1 )
+								,'TYPE2' AS TYPE 
+					FROM T_DICTIONARY_C
+					WHERE TITLE_NOSPACE = LOWER(REGEXP_REPLACE(#{value},'[-_ ]+','')) OR TITLE_ENG_NOSPACE = LOWER(REGEXP_REPLACE(#{value},'[-_ ]+',''))
+				) T1 
+				LEFT OUTER JOIN 
+				(
+					SELECT B.KEYWORD,
+					       B.KEYWORD_NOSPACE, 
+					       LISTAGG(CAST(A.FILE_NAME AS VARCHAR2(1000)), ',') WITHIN GROUP (ORDER BY A.MATERIAL_ID) AS FILE_NAME
+  					  FROM ED_MATERIAL A, ED_MATERIAL_KEYWORD B 
+ 					 WHERE A.MATERIAL_ID = B.MATERIAL_ID AND B.KEYWORD_NOSPACE = LOWER(REGEXP_REPLACE(#{value},'[-_ ]+',''))
+                     GROUP BY B.KEYWORD,B.KEYWORD_NOSPACE
+                ) T2
+                ON T1.SHORTCUT_NOSPACE = T2.KEYWORD_NOSPACE OR T1.FULLNAME_NOSPACE = T2.KEYWORD_NOSPACE
+			 ORDER BY TYPE
+	</select>
+	
+	<select id="getWeatherCode" parameterType="java.util.HashMap" resultType="java.lang.String">
+			SELECT   /*Chartbot.getWeatherCode*/
+  						CITY_CODE
+			FROM WEATHER_CODE
+	        WHERE 
+	        	ROWNUM = 1
+	        	<if test="cityType1 != null ">
+	        		AND  CITY_TYPE1 =  #{cityType1}
+	        	</if>
+	        	<if test="cityType2 != null ">
+	        		AND CITY_TYPE2 =  #{cityType2}
+	        	</if>
+	        	<if test="cityType3 != null ">
+	        		AND CITY_TYPE3 =  #{cityType3}
+	        	</if>
+	</select>
+	
+	<select id="selectCubeInfo" parameterType="chatbot.platform.model.cube.CubeConvModel" resultType="chatbot.platform.model.cube.CubeConvModel">
+			/* Chartbot.selectCubeInfo */
+			SELECT UNIQUENAME, CHANNELID, QUESTION, ANSWER, CONTEXT
+			FROM CUBE_CONV_INFO
+	        WHERE UNIQUENAME = #{uniquename} AND CHANNELID = #{channelid}
+	</select>
+	
+	<insert id="insertCubeInfo" parameterType="chatbot.platform.model.cube.CubeConvModel">
+			/* Chartbot.insertCubeInfo */
+			INSERT 
+			INTO CUBE_CONV_INFO (
+					UNIQUENAME
+				,	CHANNELID
+				,   QUESTION
+				,   ANSWER
+				,   CONTEXT
+				,   REGUSRID
+				,   REGDT				    
+			) VALUES (
+					#{uniquename}
+				,	#{channelid}
+				,   #{question}
+				,   #{answer}
+				,   #{context}
+				,   #{uniquename}
+				,   TO_CHAR(SYSDATE, 'yyyymmddhh24miss')
+			)
+	</insert>
+	
+</mapper>

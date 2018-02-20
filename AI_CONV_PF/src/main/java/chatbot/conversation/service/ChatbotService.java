@@ -37,33 +37,28 @@ public class ChatbotService {
 	public ConvModelWrapper sendText(ConvModelWrapper conv) throws Exception {
 		if (logger.isInfoEnabled()) {
 			logger.info("★★★★★★★★★★★★ In sendText Service.....");
-		}
-
-		// dialog에 출력할 data 변수
-		// String description ="";
-
+		}		
+    	
 		// aibril 통신
-		conv = ConvUtil.sendText(conv);
+		conv = ConvUtil.sendText(conv, chatbotDAO);
 
 		// 데이터를 만들어서 Dialog에 전달해야 하는 경우 start
 		// context = 대화의 흐름에 필요한 data들이 담겨있음
 		// workspace가 업무 영역일때 동작
-		if (conv.getWorkspace().equals(ConvUtil.CONVERSATION_WORKSPACE_TASK)) {
+		if (!conv.getWorkspace().equals(ConvUtil.CONVERSATION_WORKSPACE_COMMON)) {
 
 			// conv = ConvUtil.sendText(conv.getInputText(),
 			// conv.getContextString());
 		} else { // workspace가 공통 영역이지만 data를 만들어서 던져야 할 때 동작
 			// 날씨
-			if (conv.getIntentSize() > 0
-					&& ("weather".equals(conv.getIntent(0)) || "N".equals(conv.getCustomContext("weatherEntityYn")))) {
+			if (conv.getIntentSize() > 0 && ("weather".equals(conv.getIntent(0)) || "N".equals(conv.getCustomContext("weatherEntityYn")))) {
 				makeWeatherResult(conv, chatbotDAO);
-				conv = ConvUtil.sendText(conv);
+				conv = ConvUtil.sendText(conv, chatbotDAO);
 
 			// 점심메뉴
-			} else if (conv.getIntentSize() > 0
-					&& "lunchmenu".equals(conv.getIntent(0))) {
+			} else if (conv.getIntentSize() > 0 && "lunchmenu".equals(conv.getIntent(0))) {
 				makeLunchmenuResult(conv);
-				conv = ConvUtil.sendText(conv);
+				conv = ConvUtil.sendText(conv, chatbotDAO);
 			}
 		}
 		// 데이터를 만들어서 전달해야하는경우 end

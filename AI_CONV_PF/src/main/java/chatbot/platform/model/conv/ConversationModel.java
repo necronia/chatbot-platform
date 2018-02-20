@@ -1,4 +1,4 @@
-package chatbot.platform.model;
+package chatbot.platform.model.conv;
 
 import java.util.List;
 

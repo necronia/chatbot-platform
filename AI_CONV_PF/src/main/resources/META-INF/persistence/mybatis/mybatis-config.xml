@@ -22,6 +22,7 @@
 	</settings>
 	<mappers>
 		<mapper resource="META-INF/persistence/mybatis/${dbms.kind}/Simple.xml" />
+		<mapper resource="META-INF/persistence/mybatis/${dbms.kind}/Chatbot.xml" />
 	</mappers>
 </configuration>
 

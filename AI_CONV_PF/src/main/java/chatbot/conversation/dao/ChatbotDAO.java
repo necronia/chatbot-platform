@@ -6,11 +6,13 @@ package chatbot.conversation.dao;
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import chatbot.platform.model.cube.CubeConvModel;
 
 /**
  * 
@@ -26,22 +28,23 @@ public class ChatbotDAO {
     private SqlSessionTemplate sqlSessionTemplate;
 	
 	@SuppressWarnings("rawtypes")
-	public ArrayList checkWordList(String value){		
-		if(logger.isInfoEnabled()){
-			logger.info("★★★★★★★★★★★★ In checkWordListDB DAO.....");
-		}
-		return  (ArrayList) sqlSessionTemplate.selectList("Chatbot.checkWordList" , value);
+	public ArrayList checkWordList(String value){
+		return  (ArrayList) sqlSessionTemplate.selectList("Chatbot.checkWordList", value);
 	}
-	
 	
 	public int insertQuestion(Map<String, String> map) {
         return sqlSessionTemplate.insert("Chatbot.insertQuestion", map);
     }
 	
-	public String getWeatherCode(Map<String, Object> map){		
-		if(logger.isInfoEnabled()){
-			logger.info("★★★★★★★★★★★★ In getWeatherCode DAO.....");
-		}
-		return  (String) sqlSessionTemplate.selectOne("Chatbot.getWeatherCode" , map);
+	public String getWeatherCode(Map<String, Object> map){
+		return  (String) sqlSessionTemplate.selectOne("Chatbot.getWeatherCode", map);
+	}
+	
+	public int insertCubeInfo(CubeConvModel cm) {
+		return sqlSessionTemplate.insert("Chatbot.insertCubeInfo", cm);
+	}
+	
+	public CubeConvModel selectCubeInfo(CubeConvModel cm){
+		return  (CubeConvModel)sqlSessionTemplate.selectOne("Chatbot.selectCubeInfo", cm);
 	}
 }

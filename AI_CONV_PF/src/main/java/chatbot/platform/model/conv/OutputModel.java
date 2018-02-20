@@ -1,4 +1,4 @@
-package chatbot.platform.model;
+package chatbot.platform.model.conv;
 
 import java.util.List;
 
@@ -23,9 +23,10 @@ public class OutputModel {
 		return text;
 	}
 
-	public void setText(List<String> text) {
+	public OutputModel setText(List<String> text) {
 		this.text = text;
-	}
+		return this;
+	}	
 
 	public List<String> getNodes_visited() {
 		return nodes_visited;
