@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -20,11 +19,11 @@ import com.ibm.watson.developer_cloud.conversation.v1.model.Context;
 
 import chatbot.platform.model.conv.ContextModel;
 import chatbot.platform.model.conv.ConversationModel;
-import chatbot.platform.model.conv.ConversationSimpleModel;
 import chatbot.platform.model.conv.EntityModel;
 import chatbot.platform.model.conv.InputModel;
 import chatbot.platform.model.conv.IntentModel;
 import chatbot.platform.model.conv.OutputModel;
+import chatbot.platform.model.cube.CubeInfoModel;
 
 public class ConvModelWrapper {
 	
@@ -98,39 +97,8 @@ public class ConvModelWrapper {
 		return this.convModel;
 	}
 	
-	public ConversationSimpleModel getConversationSimpleModel(){
-		ConversationSimpleModel simpleModel = new ConversationSimpleModel();
-		if (this.convModel.getInput() != null){
-			simpleModel.setInputText(this.convModel.getInput().getText());
-		}
-		
-		if (this.convModel.getOutput() != null){
-			Iterator<String> it = this.convModel.getOutput().getText().iterator();		
-			StringBuffer outputs = new StringBuffer();
-			while(it.hasNext()){
-				outputs.append(it.next());
-				if(it.hasNext()){
-					outputs.append("<br/>");
-				}
-			}
-			simpleModel.setOutputText(outputs.toString());		
-		}
-		
-		simpleModel.setContext(this.convModel.getContext());
-		
-		return simpleModel;
-	}
-	
-	public void setConversationModelBySimpleString(String str) throws JsonParseException, JsonMappingException, UnsupportedEncodingException, IOException{
-		ConversationSimpleModel simpleModel = new ConversationSimpleModel();
-		simpleModel = mapper.readValue(str.getBytes("UTF-8"), ConversationSimpleModel.class);
-		
-		this.convModel.setInput(new InputModel().setText(simpleModel.getInputText()));
-		this.convModel.setContext(simpleModel.getContext());
-	}
-	
-	public String getConversationSimpleModelString() throws JsonProcessingException{
-		return this.mapper.writeValueAsString(this.getConversationSimpleModel());		
+	public void setConversationModelByCubeInfo(CubeInfoModel ciModel) throws JsonParseException, JsonMappingException, UnsupportedEncodingException, IOException {		
+		this.convModel.setInput(new InputModel().setText(ciModel.getInfo().getRec()));
 	}
 	
 	public String getConversationModelString() throws JsonProcessingException{
@@ -257,4 +225,10 @@ public class ConvModelWrapper {
 	public boolean getBranchExited(){
 		return this.convModel.getContext().getSystem().isBranch_exited();
 	}
+
+	public void clearCustomContext() {
+		ContextModel cm = this.convModel.getContext();
+		cm.setCustom_context(null);
+		this.convModel.setContext(this.convModel.getContext().setCustom_context(null));		
+	}	
 }

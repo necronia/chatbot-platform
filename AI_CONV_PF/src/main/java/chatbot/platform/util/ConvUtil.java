@@ -185,6 +185,9 @@ public class ConvUtil {
 		}
 		*/
 			
+		if(conv.getBranchExited()){
+			conv.clearCustomContext();
+		}
 		
 				
 		if(logger.isDebugEnabled()){

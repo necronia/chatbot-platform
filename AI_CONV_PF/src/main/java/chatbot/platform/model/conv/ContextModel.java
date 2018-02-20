@@ -86,8 +86,9 @@ public class ContextModel {
 		return this.custom_context;
 	}
 
-	public void setCustom_context(Map<String, Object> custom_context) {
+	public ContextModel setCustom_context(Map<String, Object> custom_context) {
 		this.custom_context = custom_context;
+		return this;
 	}
 
 	public String getSlot_val1() {
