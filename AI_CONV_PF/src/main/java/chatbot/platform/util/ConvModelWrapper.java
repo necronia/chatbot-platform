@@ -23,6 +23,7 @@ import chatbot.platform.model.conv.EntityModel;
 import chatbot.platform.model.conv.InputModel;
 import chatbot.platform.model.conv.IntentModel;
 import chatbot.platform.model.conv.OutputModel;
+import chatbot.platform.model.cube.CubeConvModel;
 import chatbot.platform.model.cube.CubeInfoModel;
 
 public class ConvModelWrapper {
@@ -97,8 +98,9 @@ public class ConvModelWrapper {
 		return this.convModel;
 	}
 	
-	public void setConversationModelByCubeInfo(CubeInfoModel ciModel) throws JsonParseException, JsonMappingException, UnsupportedEncodingException, IOException {		
+	public void setConversationModelByCube(CubeInfoModel ciModel, CubeConvModel ccModel) throws JsonParseException, JsonMappingException, UnsupportedEncodingException, IOException {		
 		this.convModel.setInput(new InputModel().setText(ciModel.getRec()));
+		this.setContextByString(ccModel.getContext());
 	}
 	
 	public String getConversationModelString() throws JsonProcessingException{
@@ -118,6 +120,13 @@ public class ConvModelWrapper {
 	
 	public String getInputText(){
 		return this.convModel.getInput().getText();
+	}
+	
+	public String getOutputText(){
+		if (this.convModel.getOutput().getText().size() == 0){
+			return "";
+		}
+		return this.convModel.getOutput().getText().get(0);
 	}
 	
 	public String getContextString() throws JsonProcessingException{

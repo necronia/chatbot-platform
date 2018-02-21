@@ -69,11 +69,19 @@ public class CubeModelWrapper {
 		return this.mapper.writeValueAsString(this.infoModel);	
 	}
 	
-	public CubeConvModel getCubeConvInfo(){
+	public CubeConvModel getCubeConvModel(){
 		return this.convModel;
 	}
 
-	public CubeConvModel makeCubeConvInfo(String question, String answer, String contextString) {
+	public CubeConvModel makeCubeConvModel() {
+		this.convModel.setUniquename(this.infoModel.getInfo().getUniquename());
+		this.convModel.setChannelid(this.infoModel.getInfo().getChannelid());		
+		
+		return this.convModel;
+	}
+	
+	public CubeConvModel makeCubeConvModel(String question, String answer, String contextString) {
+		this.convModel = new CubeConvModel();
 		this.convModel.setUniquename(this.infoModel.getInfo().getUniquename());
 		this.convModel.setChannelid(this.infoModel.getInfo().getChannelid());
 		this.convModel.setQuestion(question);
@@ -85,5 +93,5 @@ public class CubeModelWrapper {
 	
 	public void convertQuestionToAnswer(){
 		this.infoModel.setRec(this.convModel.getAnswer());		
-	}
+	}	
 }

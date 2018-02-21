@@ -26,23 +26,26 @@ public class RestAPIsController{
 	ChatbotService chatbotService;
 	
 	@RequestMapping("/getSimpleConversation")
-	public CubeInfoModel getSimpleConversation(@RequestBody String str) throws Exception{
+	public CubeInfoModel getSimpleConversation(@RequestBody CubeInfoModel cim) throws Exception{
 		
 		if(logger.isDebugEnabled()){
 			logger.debug("☆☆☆☆☆☆☆☆☆☆☆☆ getSimpleConversation 1 S ☆☆☆☆☆☆☆☆☆☆☆☆");
-			logger.debug(str);
+			logger.debug(cim.toString());
 			logger.debug("☆☆☆☆☆☆☆☆☆☆☆☆ getSimpleConversation 1 E ☆☆☆☆☆☆☆☆☆☆☆☆");
 		}
 		
-		// CubeInfoModel 생성
-		CubeModelWrapper cube = new CubeModelWrapper(str);
+		// CubeInfoModel로 Wrapper 생성
+		CubeModelWrapper cube = new CubeModelWrapper(cim);
+		cube.makeCubeConvModel();
+		cube.setCubeConvModel(chatbotDAO.selectCubeInfo(cube.getCubeConvModel()));
 				
+		// 대화 호출
 		ConvModelWrapper conv = new ConvModelWrapper();
-		conv.setConversationModelByCubeInfo(cube.getCubeInfoModel());
+		conv.setConversationModelByCube(cube.getCubeInfoModel(), cube.getCubeConvModel());
 		conv = chatbotService.sendText(conv);
 		
 		// 질의내용 DB저장
-    	chatbotDAO.insertCubeInfo(cube.makeCubeConvInfo(conv.getInputText(), (String)conv.getConversationModel().getOutput().getText().get(0), conv.getContextString()));
+    	chatbotDAO.insertCubeInfo(cube.makeCubeConvModel(conv.getInputText(), (String)conv.getOutputText(), conv.getContextString()));
     	cube.convertQuestionToAnswer();
 		    	
 		if(logger.isDebugEnabled()){
