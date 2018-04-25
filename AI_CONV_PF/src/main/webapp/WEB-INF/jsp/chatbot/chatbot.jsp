@@ -307,7 +307,7 @@ $(document).ready(function(){
 		height  :  '560px',
 		bgColor :  '#fff',
 		//ctitle  :  "Aibril Chatbot",
-		firstMsg : "안녕하세요. chatbot Platform 입니다.",
+		firstMsg : "안녕하세요, IT HELP DESK 챗봇입니다.</BR> 현재 질문 수집 과정은 ~~~을 위한 과정입니다. 아래쪽 콤보박스에서 질문 영역을 선택하신 후 질문해주세요. 왼쪽에 모든 과정이 체크 된 경우 질문수집 과정은 끝이납니다. ",
 		service_id : "aaae1dc4-8bc4-4845-a25c-a28008854997"
 	});
 	
