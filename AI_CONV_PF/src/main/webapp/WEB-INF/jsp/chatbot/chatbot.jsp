@@ -263,13 +263,13 @@
 	</a> -->
 
     <div id="chatbot-box" style="height:90%;"></div>
-			     <div id="section-box" style="height:90%;">
-			     	<div><input id="ETC" type="checkbox"  disabled>기타</input></div>
-			     	<div><input id="PC" type="checkbox" disabled>PC</input></div>
-			     	<div><input id="OS" type="checkbox" disabled>OS</input></div>
-			     	<div><input id="DRM" type="checkbox" disabled>DRM</input></div>
-			     	<div><input id="SKYNET" type="checkbox" disabled>SKYNET</input></div>
-</div>
+	<div id="section-box" style="height:90%;">
+			     	<div class="checks"><input id="ETC" type="checkbox"  disabled></input><label for="ETC">기타</label></div>
+			     	<div class="checks"><input id="PC" type="checkbox" disabled></input><label for="PC">PC</label></div>
+			     	<div class="checks"><input id="OS" type="checkbox" disabled></input><label for="OS">OS</label></div>
+			     	<div class="checks"><input id="DRM" type="checkbox" disabled></input><label for="DRM">DRM</label></div>
+			     	<div class="checks"><input id="SKYNET" type="checkbox" disabled></input><label for="SKYNET">SKYNET</label></div>
+	</div>
 </body>
 <script>
 
