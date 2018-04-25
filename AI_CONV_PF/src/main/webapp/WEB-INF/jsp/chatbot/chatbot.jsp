@@ -264,11 +264,11 @@
 
     <div id="chatbot-box" style="height:90%;"></div>
 			     <div id="section-box" style="height:90%;">
-			     	<div><input id="ETC" type="checkbox" >기타</input></div>
-			     	<div><input id="PC" type="checkbox">PC</input></div>
-			     	<div><input id="OS" type="checkbox">OS</input></div>
-			     	<div><input id="DRM" type="checkbox">DRM</input></div>
-			     	<div><input id="SKYNET" type="checkbox">SKYNET</input></div>
+			     	<div><input id="ETC" type="checkbox"  disabled>기타</input></div>
+			     	<div><input id="PC" type="checkbox" disabled>PC</input></div>
+			     	<div><input id="OS" type="checkbox" disabled>OS</input></div>
+			     	<div><input id="DRM" type="checkbox" disabled>DRM</input></div>
+			     	<div><input id="SKYNET" type="checkbox" disabled>SKYNET</input></div>
 </div>
 </body>
 <script>
