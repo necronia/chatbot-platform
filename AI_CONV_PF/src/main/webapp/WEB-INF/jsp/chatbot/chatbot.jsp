@@ -264,6 +264,7 @@
 
     <div id="chatbot-box" style="height:90%;"></div>
 	<div id="section-box" style="height:90%;">
+					<div style="text-align:center; color:blue; font-size:15px;">영역별 작성 현황</div>
 			     	<div class="checks"><input id="ETC" type="checkbox"  disabled></input><label for="ETC">기타</label></div>
 			     	<div class="checks"><input id="PC" type="checkbox" disabled></input><label for="PC">PC</label></div>
 			     	<div class="checks"><input id="OS" type="checkbox" disabled></input><label for="OS">OS</label></div>
