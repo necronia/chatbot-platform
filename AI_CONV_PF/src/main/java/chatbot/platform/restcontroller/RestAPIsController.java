@@ -42,7 +42,7 @@ public class RestAPIsController{
 		// 대화 호출
 		ConvModelWrapper conv = new ConvModelWrapper();
 		conv.setConversationModelByCube(cube.getCubeInfoModel(), cube.getCubeConvModel());
-		conv = chatbotService.sendText(conv);
+		conv = chatbotService.sendText(conv, "dummy");
 		
 		// 질의내용 DB저장
     	chatbotDAO.insertCubeInfo(cube.makeCubeConvModel(conv.getInputText(), (String)conv.getOutputText(), conv.getContextString()));
@@ -68,7 +68,7 @@ public class RestAPIsController{
 		}		
 		
 		ConvModelWrapper conv = new ConvModelWrapper(str);
-		conv = chatbotService.sendText(conv);
+		conv = chatbotService.sendText(conv, "dummy");
 		
 		if(logger.isDebugEnabled()){
 			logger.debug("☆☆☆☆☆☆☆☆☆☆☆☆ getConversation 2 S ☆☆☆☆☆☆☆☆☆☆☆☆");

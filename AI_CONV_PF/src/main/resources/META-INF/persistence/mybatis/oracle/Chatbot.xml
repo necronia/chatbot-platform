@@ -152,4 +152,31 @@
 				)
 	</insert>
 	
+	<insert id="insertConvInfo" parameterType="java.util.HashMap">
+	        	INSERT INTO TEMP_CONV_INFO ( /* Chartbot.insertConvInfo */
+						CONVID
+					,   QUESTION
+					,   ANSWER
+					,   CONTEXT
+					,   USERID
+					, 	REGDT
+					,   SECTION
+				) VALUES (
+						(SELECT NVL(MAX(CONVID) , 0) + 1 FROM TEMP_CONV_INFO)
+					,	#{question}
+					,   #{answer}
+					,   #{context}	
+					,   #{userId}
+					,   TO_CHAR(SYSDATE, 'yyyymmddhh24miss')
+					,  #{section}
+				)
+	</insert>
+	
+	<select id="checkConvSection" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		    /*CHARTBOT.checkConvSection*/
+					SELECT DISTINCT(SECTION) 
+							FROM TEMP_CONV_INFO
+					WHERE USERID = #{userId}
+	</select>
+	
 </mapper>

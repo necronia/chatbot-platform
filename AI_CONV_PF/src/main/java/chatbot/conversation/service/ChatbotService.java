@@ -3,7 +3,9 @@
  */
 package chatbot.conversation.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -33,19 +35,34 @@ public class ChatbotService {
 
 	@Autowired
 	ChatbotDAO chatbotDAO;
-
-	public ConvModelWrapper sendText(ConvModelWrapper conv) throws Exception {
+	
+	
+	public ArrayList checkSection(String userId){
+		return  chatbotDAO.checkConvSection(userId);
+	}
+	
+	public ConvModelWrapper sendText(ConvModelWrapper conv , String section) throws Exception {
 		if (logger.isInfoEnabled()) {
 			logger.info("★★★★★★★★★★★★ In sendText Service.....");
 		}		
     	
+		Map<String, Object> paraMap = new HashMap<String, Object>();
 		// aibril 통신
 		conv = ConvUtil.sendText(conv, chatbotDAO);
+		
+		paraMap.put("question",  conv.getInputText());
+		paraMap.put("answer",  conv.getOutputText());
+		paraMap.put("context",  conv.getContextString());
+		paraMap.put("section",  section);
+		paraMap.put("userId", "x0007926");
+		
+		chatbotDAO.insertConvInfo(paraMap);
+
 
 		// 데이터를 만들어서 Dialog에 전달해야 하는 경우 start
 		// context = 대화의 흐름에 필요한 data들이 담겨있음
 		// workspace가 업무 영역일때 동작
-		if (!conv.getWorkspace().equals(ConvUtil.CONVERSATION_WORKSPACE_COMMON)) {
+/*		if (!conv.getWorkspace().equals(ConvUtil.CONVERSATION_WORKSPACE_COMMON)) {
 
 			// conv = ConvUtil.sendText(conv.getInputText(),
 			// conv.getContextString());
@@ -60,7 +77,7 @@ public class ChatbotService {
 				makeLunchmenuResult(conv);
 				conv = ConvUtil.sendText(conv, chatbotDAO);
 			}
-		}
+		}*/
 		// 데이터를 만들어서 전달해야하는경우 end
 
 		return conv;

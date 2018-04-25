@@ -48,19 +48,19 @@ public class ConvUtil {
 	@Value("${aibril.credential.pwd}")
 	private void setAibrilAccountPwd(String str){ConvUtil.AIBRIL_ACCOUNT_PWD = str;}
 	
-	@Value("${aibril.workspace.main}")
+	@Value("${aibril.workspace.common}")
 	private void setConversationWorkspaceMain(String str){ConvUtil.CONVERSATION_WORKSPACE_MAIN = str;}
 	
 	@Value("${aibril.workspace.common}")
 	private void setConversationWorkspaceCommon(String str){ConvUtil.CONVERSATION_WORKSPACE_COMMON = str;}
 	
-	@Value("${aibril.workspace.task.hr1}")
+	@Value("${aibril.workspace.task}")
 	private void setConversationWorkspaceTaskHr1(String str){ConvUtil.CONVERSATION_WORKSPACE_TASK_HR1 = str;}
 	
-	@Value("${aibril.workspace.task.hr2}")
+	@Value("${aibril.workspace.task}")
 	private void setConversationWorkspaceTaskHr2(String str){ConvUtil.CONVERSATION_WORKSPACE_TASK_HR2 = str;}
 	
-	@Value("${aibril.workspace.terms}")
+	@Value("${aibril.workspace.task}")
 	private void setConversationWorkspaceTerms(String str){ConvUtil.CONVERSATION_WORKSPACE_TERMS = str;}	
 	
 	@Autowired
@@ -95,13 +95,14 @@ public class ConvUtil {
 		// 1. Main workspace에서 workspace 분기		
 		// 1.1 sub workspace가 없으면 선택을 위한 intent 조회/분기
 		// 1.2 custom_context에 workspace 초기화가 있으면 main으로 분기		
-		if ((conv.getWorkspace() == null) || (conv.getWorkspace() != null && conv.getBranchExited())){
+/*		if ((conv.getWorkspace() == null) || (conv.getWorkspace() != null && conv.getBranchExited())){*/
 			context.put("workspace", ConvUtil.CONVERSATION_WORKSPACE_MAIN);
 			MessageOptions options = new MessageOptions.Builder(ConvUtil.CONVERSATION_WORKSPACE_MAIN).input(input).context(context).build();
 			MessageResponse aibrilResponse = service.message(options).execute();
 			conv = new ConvModelWrapper(JSONObject.toJSONString(aibrilResponse));
 			
-			if ("search_dictionary".equals(conv.getIntent(0))){
+			
+			/*			if ("search_dictionary".equals(conv.getIntent(0))){
 				context.put("workspace", ConvUtil.CONVERSATION_WORKSPACE_TERMS);
 				options = new MessageOptions.Builder(ConvUtil.CONVERSATION_WORKSPACE_TERMS).input(input).context(context).build();
 				aibrilResponse = service.message(options).execute();
@@ -136,14 +137,14 @@ public class ConvUtil {
 				options = new MessageOptions.Builder(ConvUtil.CONVERSATION_WORKSPACE_COMMON).input(input).context(context).build();
 				aibrilResponse = service.message(options).execute();
 				conv = new ConvModelWrapper(JSONObject.toJSONString(aibrilResponse));
-			}
-		}else if (conv.getWorkspace() != null){
+			}*/
+/*		}else if (conv.getWorkspace() != null){
 			// 2 sub workspace가 존재하면 계속 진행			
 			context.put("workspace", conv.getWorkspace());
 			MessageOptions options = new MessageOptions.Builder(conv.getWorkspace()).input(input).context(context).build();
 			MessageResponse aibrilResponse = service.message(options).execute();
 			conv = new ConvModelWrapper(JSONObject.toJSONString(aibrilResponse));
-		}		
+		}		*/
 		
 		/*
 		//2.업무 workspace 에서 없으면 공통 workspace에서 intents 찾기
@@ -185,9 +186,9 @@ public class ConvUtil {
 		}
 		*/
 			
-		if(conv.getBranchExited()){
+/*		if(conv.getBranchExited()){
 			conv.clearCustomContext();
-		}
+		}*/
 		
 				
 		if(logger.isDebugEnabled()){

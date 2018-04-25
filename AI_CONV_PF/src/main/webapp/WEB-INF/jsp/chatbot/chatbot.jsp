@@ -258,11 +258,18 @@
 <body style="background-color:#fefefe; overflow-y: scroll; min-width: 1280px;">
 
     <!-- 컨텐츠 영역 -->
-    <a id="btnChatbot" style="position:fixed; right:20px; bottom:10px; cursor:pointer;" onclick="openChatbot()">
+<!--     <a id="btnChatbot" style="position:fixed; right:20px; bottom:10px; cursor:pointer;" onclick="openChatbot()">
 		<img id="btnChatbotImage" src="../../resources/images/btn_chatbot_on.png" />
-	</a>
+	</a> -->
 
-    <div id="chatbot-box" style="height:80%"></div>
+    <div id="chatbot-box" style="height:90%;"></div>
+			     <div id="section-box" style="height:90%;">
+			     	<div><input id="ETC" type="checkbox" >기타</input></div>
+			     	<div><input id="PC" type="checkbox">PC</input></div>
+			     	<div><input id="OS" type="checkbox">OS</input></div>
+			     	<div><input id="DRM" type="checkbox">DRM</input></div>
+			     	<div><input id="SKYNET" type="checkbox">SKYNET</input></div>
+</div>
 </body>
 <script>
 
@@ -290,19 +297,24 @@ function returnBorder(){
 /* 헤더 스크립트 끝*/
 
 $(document).ready(function(){
-	$('.tab_link').click(function(){
-		$('.tab_item, .selected').removeClass("selected");
-		$(this).parent().addClass('selected');
+	$('#btnChatbotImage').prop("src","../../resources/images/btn_chatbot_off.png");
+	$('#chatbot-box').show();
+	$('#chatbot-box').empty();
+	
+	$('#chatbot-box').OEngine({
+		width   :  '100%',
+		height  :  '560px',
+		bgColor :  '#fff',
+		//ctitle  :  "Aibril Chatbot",
+		firstMsg : "안녕하세요. chatbot Platform 입니다.",
+		service_id : "aaae1dc4-8bc4-4845-a25c-a28008854997"
 	});
 	
-	$('.search-area-main .dropdown-menu>li>a').click(function(){
-		$('#rnrQueryMain').val($(this).text());
-	});
-	
-	$('.search-area-header .dropdown-menu>li>a').click(function(){
-		$('#rnrQueryHeader').val($(this).text());
-	});
-
+ 	//사용 시 텍스트 스크랩 되도록 수정. 
+		$( "#chatbot-box" ).draggable({
+			'cancel':'.input-box, .conversation',
+			'containment':'parent'
+		});
 })
 
 function process(result) {
@@ -325,7 +337,7 @@ function process(result) {
 			}
 		}
 		
-		var debugCheck = $("input:checkbox[id='debugging']").is(":checked");
+/* 		var debugCheck = $("input:checkbox[id='debugging']").is(":checked");
 		if(debugCheck){
 			if(result.intents.length > 0){
 				intent = result.intents[0].intent;
@@ -337,7 +349,7 @@ function process(result) {
 				s += "<br /> intent : " + intent;
 				s +=  "<br /> confidence : " + confidence;
 			}
-		}
+		} */
 
 	}
 
@@ -375,7 +387,7 @@ function imgOpenPop(address){
 //	}
 }
 
-function openChatbot(){
+/* function openChatbot(){
 	
 	if(chatbotFlag == "I"){
 		chatbotFlag = "Y";
@@ -415,9 +427,9 @@ function closeChatbot(){
 	chatbotFlag = "N";
 	$('#btnChatbotImage').prop("src","../../resources/images/btn_chatbot_on.png");
 	$('#chatbot-box').hide();
-}
+} */
 
-function keyPress(event, queryType){
+/* function keyPress(event, queryType){
 	if(event.keyCode == 13){
 		if(queryType === "main"){
 			searchRnrResult("main");
@@ -425,7 +437,7 @@ function keyPress(event, queryType){
 			searchRnrResult("header");
 		}
 	}	
-}
+} */
 
 function dateFormatter(beforeDate){
 	var year = beforeDate.substring(0, 4);

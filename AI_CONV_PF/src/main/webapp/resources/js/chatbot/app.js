@@ -40,8 +40,22 @@ License: 	the MIT and GPL licenses.
 			service_id    = (options.service_id == undefined) ? '' :  options.service_id;
 		}
 		
+		var selectBoxList = "<select name=\"selectSection\" id=\"selectSection\" >" +
+				"<option value =\"ETC\">기타</option>" +
+				"<option value =\"PC\">PC</option>" +
+				"<option value =\"OS\">OS</option>"+
+				"<option value =\"DRM\">DRM</option>"+
+				"<option value =\"SKYNET\">SKYNET</option>"+
+				"</select>";
+		
+/*		var selectBoxList = "<span class=\"debug\">" +
+				"<input type=\"checkbox\" id=\"debugging\" name=\"debugging\">" +
+		"</select></span>";*/
+		
 		$(elem).append('<div class="chatbot-inner">');
-		$('.chatbot-inner').append('<div class="title-box"><span class="title">Aibril-Watson ChatBot</span><span class="debug">debug <input type="checkbox" id="debugging" name="debugging"></span><a class="chatbot-close" onclick="closeChatbot();"><img src="../../resources/images/icon/close_icon.png"></img></a></div>');
+		/*$('.chatbot-inner').append('<div class="title-box"><span class="title">Aibril-Watson ChatBot</span><span class="debug">debug <input type="checkbox" id="debugging" name="debugging"></span><a class="chatbot-close" onclick="closeChatbot();"><img src="../../resources/images/icon/close_icon.png"></img></a></div>');*/
+		/*$('.chatbot-inner').append('<div class="title-box"><span class="title">Aibril-Watson ChatBot</span><a class="chatbot-close" onclick="closeChatbot();"><img src="../../resources/images/icon/close_icon.png"></img></a></div>');*/
+		$('.chatbot-inner').append('<div class="title-box"><span class="title">Aibril-Watson ChatBot</span><a class="chatbot-close" onclick="closeChatbot();"><img src="../../resources/images/icon/close_icon.png"></img></a></div>');
 		$('.chatbot-inner').append('<div class="conversation-box"></div>');
 		$('.conversation-box').append('<div class="conversation"></div>');
 		//2th
@@ -64,8 +78,9 @@ License: 	the MIT and GPL licenses.
 		//3th div
 		$('.chatbot-inner').append('<div class="input-box"></div>');
 		$('.input-box').append('<input type="text" id="messageText" placeholder="무엇을 알려드릴까요?">');		
-		$('.input-box').append('<a id="sendImg" style="border-radius:0%; background:#ffffff url(../../resources/images/icon/send_image.png) no-repeat; height: 25px;width: 25px;background-size:contain;"></a>');
+		/*$('.input-box').append('<a id="sendImg" style="border-radius:0%; background:#ffffff url(../../resources/images/icon/send_image.png) no-repeat; height: 25px;width: 25px;background-size:contain;"></a>');*/
 		//$('.input-box').append('<a id="sendImg" style="border-radius:0%; background-image:url(../../resources/images/icon/icon_vr_image.png);"></a>');
+		$('.input-box').append(selectBoxList);
 		$('.input-box').append('<a id="sendMessage"></a>');
 
 		//4th div (helpdesk 영역)
@@ -138,6 +153,7 @@ function fnSend(service_id){
     //data.api_key = service_id;
     data.text = msg;
 	data.context = JSON.stringify(conText);
+	data.section = $("#selectSection").val();
 	console.log(data)
 	data = JSON.stringify(data);
 	
@@ -179,6 +195,9 @@ function fnSend(service_id){
 			} else {	
 				console.log(response);
 				var result = response.returnMessage;
+				for(var i=0; i<response.checkSection.length; i++){
+					$("input:checkbox[id='"+response.checkSection[i].SECTION+"']").attr("checked", true);
+				}
 //				console.log(result);
 //				console.log(result.output.text[0]);
 				
@@ -205,6 +224,8 @@ function fnSend(service_id){
 			alert('error' + JSON.stringify(xhr) );
 		}
 	});	
+	
+	
 }
 
 function searchVRcallback(defect1, defect2){

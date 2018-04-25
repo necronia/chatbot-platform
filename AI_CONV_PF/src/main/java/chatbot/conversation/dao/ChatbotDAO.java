@@ -4,6 +4,7 @@
 package chatbot.conversation.dao;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
@@ -46,5 +47,14 @@ public class ChatbotDAO {
 	
 	public CubeConvModel selectCubeInfo(CubeConvModel cm){
 		return  (CubeConvModel)sqlSessionTemplate.selectOne("Chatbot.selectCubeInfo", cm);
+	}
+	
+	public int insertConvInfo(Map<String, Object> map) {
+        return sqlSessionTemplate.insert("Chatbot.insertConvInfo", map);
+    }
+	
+	@SuppressWarnings("rawtypes")
+	public  ArrayList checkConvSection (String userId){
+		return (ArrayList)sqlSessionTemplate.selectList("Chatbot.checkConvSection", userId);
 	}
 }

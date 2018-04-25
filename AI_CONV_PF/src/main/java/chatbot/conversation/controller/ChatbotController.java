@@ -52,8 +52,8 @@ public class ChatbotController {
     		logger.info("★★★★★★★★★★★★ In sendText controller..... : " + map);
     	}
     	ConvModelWrapper wrapper = new ConvModelWrapper(map.get("text"), map.get("context"));
-    	model.addAttribute("returnMessage", chatbotService.sendText(wrapper).getConversationModel());
-    	
+    	model.addAttribute("returnMessage", chatbotService.sendText(wrapper , map.get("section")).getConversationModel());
+    	model.addAttribute("checkSection" , chatbotService.checkSection("x0007926"));
         return model;
     } 
 }
