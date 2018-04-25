@@ -97,6 +97,7 @@ public class ConvUtil {
 		// 1.2 custom_context에 workspace 초기화가 있으면 main으로 분기		
 /*		if ((conv.getWorkspace() == null) || (conv.getWorkspace() != null && conv.getBranchExited())){*/
 			context.put("workspace", ConvUtil.CONVERSATION_WORKSPACE_MAIN);
+			context.put("slot_val1", "campaign");
 			MessageOptions options = new MessageOptions.Builder(ConvUtil.CONVERSATION_WORKSPACE_MAIN).input(input).context(context).build();
 			MessageResponse aibrilResponse = service.message(options).execute();
 			conv = new ConvModelWrapper(JSONObject.toJSONString(aibrilResponse));

@@ -162,7 +162,7 @@
 					, 	REGDT
 					,   SECTION
 				) VALUES (
-						(SELECT NVL(MAX(CONVID) , 0) + 1 FROM TEMP_CONV_INFO)
+						(SELECT NVL(MAX(TO_NUMBER(CONVID)) , 0) + 1 FROM TEMP_CONV_INFO)
 					,	#{question}
 					,   #{answer}
 					,   #{context}	
